@@ -14,7 +14,11 @@ export const GroundTerrain: React.FC<GroundTerrainProps> = ({
   totalValue = 10000,
   dcaStreak = 3,
 }) => {
-  const biome = getBiomeTier(totalValue);
+  const validTotalValue = isFinite(totalValue) && totalValue >= 0 ? totalValue : 0;
+  const validDcaStreak = isFinite(dcaStreak) && dcaStreak >= 0 ? dcaStreak : 0;
+  const validCashBalance = isFinite(cashBalance) && cashBalance >= 0 ? cashBalance : 0;
+
+  const biome = getBiomeTier(validTotalValue);
 
   // Ground colors shift based on weather and biome
   const getGroundColor = () => {
@@ -36,12 +40,12 @@ export const GroundTerrain: React.FC<GroundTerrainProps> = ({
   };
 
   // Meadow radius scales with biome tier
-  const meadowRadius = Math.max(biome.islandRadius, 8.5 + Math.log10(1 + Math.max(0, totalValue) / 1000) * 1.5);
+  const meadowRadius = Math.max(biome.islandRadius, 8.5 + Math.log10(1 + validTotalValue / 1000) * 1.5);
 
   // Generate wildflower clusters for disciplined DCA streaks
   const wildflowers = useMemo(() => {
     const flowers: { x: number; z: number; color: string }[] = [];
-    const count = Math.min(36, Math.max(6, dcaStreak * 3));
+    const count = Math.min(36, Math.max(6, validDcaStreak * 3));
     const colors = ['#f4e04d', '#f72585', '#4cc9f0', '#7209b7', '#f39c12', '#52b788'];
 
     for (let i = 0; i < count; i++) {
@@ -54,7 +58,7 @@ export const GroundTerrain: React.FC<GroundTerrainProps> = ({
       });
     }
     return flowers;
-  }, [dcaStreak, meadowRadius]);
+  }, [validDcaStreak, meadowRadius]);
 
   // Distant Alpine Mountain Peaks for Tier 4 & 5
   const mountainPeaks = useMemo(() => {
@@ -83,12 +87,12 @@ export const GroundTerrain: React.FC<GroundTerrainProps> = ({
       </mesh>
 
       {/* The Liquid Cash Stream */}
-      {cashBalance > 0 && (
+      {validCashBalance > 0 && (
         <group position={[0, 0.12, 0]}>
           <mesh rotation={[-Math.PI / 2, 0, 0.4]} receiveShadow>
             <planeGeometry
               args={[
-                Math.min(3.8, 1.4 + Math.log10(1 + cashBalance / 500) * 0.4),
+                Math.min(3.8, 1.4 + Math.log10(1 + validCashBalance / 500) * 0.4),
                 meadowRadius * 2,
                 16,
                 16,

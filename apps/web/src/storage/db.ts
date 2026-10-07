@@ -14,11 +14,20 @@ export class InvestForestDatabase extends Dexie {
 
   constructor() {
     super('InvestForestDB');
+
+    // Version 1 (Initial schema)
+    this.version(1).stores({
+      holdings: '&symbol, assetClass, firstPurchasedDate',
+      transactions: '&id, date, type, symbol, assetClass',
+      settings: '&key',
+    });
+
+    // Version 2 (Adds harvestMemorials table)
     this.version(2).stores({
       holdings: '&symbol, assetClass, firstPurchasedDate',
       transactions: '&id, date, type, symbol, assetClass',
       settings: '&key',
-      harvestMemorials: '&id, symbol, harvestedDate'
+      harvestMemorials: '&id, symbol, harvestedDate',
     });
   }
 }

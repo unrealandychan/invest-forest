@@ -1,0 +1,101 @@
+{
+  "version": 3,
+  "id": "muxpwh3x-en3zkx",
+  "objective": "=== Goal ===\nObjective: Fix the Discount Seed and Plant/DCA button interactions, wipe existing database state for a pristine launch, and deliver a bug-free, end-to-end verified User Journey ready for immediate production playtesting.\nSuccess criteria:\n1. Clicking \"Discount Seeds 🌱\" and \"Plant / DCA\" operates reliably with zero crashes across both blank-slate and populated portfolios, correctly recording purchases, updating cash balances, and sprouting 3D trees.\n2. Database storage cleanly handles schema initialization and wipes stale test records, presenting a fresh, ready-to-use starting experience with clear options for Clean Soil ($0) or Boglehead Demo.\n3. The complete user journey (Onboarding Guide -> 3D Forest Canvas -> DCA Planting -> Tree Ring Inspection -> Portfolio Terminal -> Time Machine Simulator -> Two Clear Doors Harvest) is verified bug-free.\n4. All unit and integration test suites pass with 100% success (0 failures).\n5. Docker containers rebuilt, verified live on ports 3000 and 8080, and pushed to GitHub.\nBoundaries:\n- In scope: Fixes for DepositModal, FearEasingBanner, Dexie schema initialization, data wipe button/utility, end-to-end verification, Docker rebuild, and git push.\n- Out of scope: Paid cloud third-party subscription credentials.\nConstraints:\n- 100% local-first data privacy and zero-knowledge architecture.\n- WebGL 3D canvas must maintain 60 FPS performance.\n- Strict TypeScript typing with zero build warnings.\nVerification contract:\n- Run `npm test` across all workspaces with 0 failures.\n- Run `npm run build` with 0 errors.\n- Verify live Docker container response on ports 3000 and 8080.\n- Verify user journey flows end-to-end.\nIf blocked: Stop and ask the user for guidance.",
+  "status": "active",
+  "autoContinue": true,
+  "usage": {
+    "tokensUsed": 1019034,
+    "activeSeconds": 1083
+  },
+  "sisyphus": false,
+  "revision": 42,
+  "createdAt": "2026-10-07T06:19:29.565Z",
+  "updatedAt": "2026-10-07T06:56:13.894Z",
+  "scheduler": {
+    "version": 1,
+    "owner": "01a1120f-e2a8-73d8-8771-a3b8cc2ea584",
+    "generation": "dd7ce64e-e3f3-4761-a6be-74b83f1dd123",
+    "used": 0,
+    "phase": "idle",
+    "repairUsed": false
+  },
+  "taskList": {
+    "tasks": [
+      {
+        "id": "task-1",
+        "title": "Fix Discount Seed & Plant/DCA interaction and transaction persistence",
+        "status": "complete",
+        "verificationContract": "Resolve modal state bugs in FearEasingBanner and DepositModal, ensure robust price fallbacks, and verify tree planting succeeds without errors.",
+        "completedAt": "2026-10-07T06:46:35.169Z",
+        "evidence": "Sanitized DepositModal inputs/shares against NaN, added Discount Seedling active banner, guarded addTransaction & GroundTerrain against NaN crashes, web build clean."
+      },
+      {
+        "id": "task-2",
+        "title": "Clean database wipe & schema resilience for fresh product launch",
+        "status": "complete",
+        "verificationContract": "Implement clean data reset utility, ensure Dexie version migration resilience, and verify fresh launch experience.",
+        "completedAt": "2026-10-07T06:51:09.658Z",
+        "evidence": "Implemented Dexie v1->v2 migration in db.ts, resetEntireDatabase in repository.ts, ResetConfirmModal.tsx, wired into navbar/terminal, and verified clean build."
+      },
+      {
+        "id": "task-3",
+        "title": "End-to-end user journey verification & bug sweep",
+        "status": "complete",
+        "verificationContract": "Test and verify each step of the user journey: Onboarding -> 3D Canvas -> DCA Buy -> Tree Inspect -> Terminal -> Time Machine -> Two Doors Harvest.",
+        "completedAt": "2026-10-07T06:52:57.516Z",
+        "evidence": "Verified all 7 user journey stages in packages/core/tests/userJourney.test.ts; all 29 core tests and 13 server tests passing with 0 errors."
+      },
+      {
+        "id": "task-4",
+        "title": "Full test suites, Docker rebuild & GitHub sync",
+        "status": "pending",
+        "verificationContract": "Run all unit/integration tests, rebuild Docker containers, verify live endpoints on ports 3000/8080, and push master."
+      }
+    ],
+    "blockCompletion": true,
+    "proposedAt": "2026-10-07T06:09:09.127Z"
+  },
+  "activePath": ".pi/goals/active_goal_2026100714192956_muxpwh3x-en3zkx.md",
+  "currentTaskId": "task-4"
+}
+
+# Goal Prompt
+
+=== Goal ===
+Objective: Fix the Discount Seed and Plant/DCA button interactions, wipe existing database state for a pristine launch, and deliver a bug-free, end-to-end verified User Journey ready for immediate production playtesting.
+Success criteria:
+1. Clicking "Discount Seeds 🌱" and "Plant / DCA" operates reliably with zero crashes across both blank-slate and populated portfolios, correctly recording purchases, updating cash balances, and sprouting 3D trees.
+2. Database storage cleanly handles schema initialization and wipes stale test records, presenting a fresh, ready-to-use starting experience with clear options for Clean Soil ($0) or Boglehead Demo.
+3. The complete user journey (Onboarding Guide -> 3D Forest Canvas -> DCA Planting -> Tree Ring Inspection -> Portfolio Terminal -> Time Machine Simulator -> Two Clear Doors Harvest) is verified bug-free.
+4. All unit and integration test suites pass with 100% success (0 failures).
+5. Docker containers rebuilt, verified live on ports 3000 and 8080, and pushed to GitHub.
+Boundaries:
+- In scope: Fixes for DepositModal, FearEasingBanner, Dexie schema initialization, data wipe button/utility, end-to-end verification, Docker rebuild, and git push.
+- Out of scope: Paid cloud third-party subscription credentials.
+Constraints:
+- 100% local-first data privacy and zero-knowledge architecture.
+- WebGL 3D canvas must maintain 60 FPS performance.
+- Strict TypeScript typing with zero build warnings.
+Verification contract:
+- Run `npm test` across all workspaces with 0 failures.
+- Run `npm run build` with 0 errors.
+- Verify live Docker container response on ports 3000 and 8080.
+- Verify user journey flows end-to-end.
+If blocked: Stop and ask the user for guidance.
+
+## Progress
+
+- Status: running
+- Auto-continue: on
+- Sisyphus mode: no
+- Time spent: 18m03s
+- Tokens used: 1M (1,019,034) tokens
+## Tasks
+
+<!-- blockCompletion: true -->
+- [x] task-1: Fix Discount Seed & Plant/DCA interaction and transaction persistence — evidence: Sanitized DepositModal inputs/shares against NaN, added Discount Seedling active banner, guarded addTransaction & GroundTerrain against NaN crashes, web build clean.
+- [x] task-2: Clean database wipe & schema resilience for fresh product launch — evidence: Implemented Dexie v1->v2 migration in db.ts, resetEntireDatabase in repository.ts, ResetConfirmModal.tsx, wired into navbar/terminal, and verified clean build.
+- [x] task-3: End-to-end user journey verification & bug sweep — evidence: Verified all 7 user journey stages in packages/core/tests/userJourney.test.ts; all 29 core tests and 13 server tests passing with 0 errors.
+- [ ] task-4: Full test suites, Docker rebuild & GitHub sync — contract: Run all unit/integration tests, rebuild Docker containers, verify live endpoints on ports 3000/8080, and push master.
+

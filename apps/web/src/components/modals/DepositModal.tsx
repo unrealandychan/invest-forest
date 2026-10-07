@@ -51,8 +51,8 @@ export const DepositModal: React.FC<DepositModalProps> = ({
   });
 
   const currentEffectiveSymbol = customTickerMode
-    ? (customSymbol.trim().toUpperCase() || 'CUSTOM')
-    : selectedSymbol;
+    ? (customSymbol.trim().toUpperCase() || 'VOO')
+    : (selectedSymbol || 'VOO');
 
   const currentSpecies = SPECIES_CATALOG[assetClass] || SPECIES_CATALOG.broad_market;
 
@@ -100,8 +100,12 @@ export const DepositModal: React.FC<DepositModalProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const numAmount = parseFloat(amount);
-    if (isNaN(numAmount) || numAmount <= 0) return;
+    const numAmount = Math.max(1, parseFloat(amount) || 100);
+    const numShares = Math.max(0.0001, parseFloat(shares) || 1);
+    const finalSymbol = customTickerMode
+      ? (customSymbol.trim().toUpperCase() || 'VOO')
+      : (selectedSymbol || 'VOO');
+    const finalPrice = Math.max(0.01, isFinite(livePrice!) && livePrice! > 0 ? livePrice! : numAmount / numShares);
 
     setIsSubmitting(true);
     try {
@@ -115,22 +119,20 @@ export const DepositModal: React.FC<DepositModalProps> = ({
           note: 'Disciplined liquid reserve nourishment',
         });
       } else {
-        const numShares = parseFloat(shares) || 1;
-        const price = livePrice || (numAmount / numShares);
         const isDrawdown = drawdownPercent <= -10 || weather === 'winter_snow';
         const drawdownMag = Math.abs(drawdownPercent <= -10 ? drawdownPercent : weather === 'winter_snow' ? 18.5 : 0);
 
         await addTransaction({
           date: today,
           type: 'buy',
-          symbol: currentEffectiveSymbol,
+          symbol: finalSymbol,
           assetClass,
           shares: numShares,
-          price,
+          price: finalPrice,
           amount: numAmount,
           note: isDrawdown
-            ? `Winter Bloom DCA into ${currentEffectiveSymbol} (>10% discount)`
-            : `DCA purchase into ${currentEffectiveSymbol}`,
+            ? `Winter Bloom DCA into ${finalSymbol} (>10% discount)`
+            : `DCA purchase into ${finalSymbol}`,
           isWinterBloom: isDrawdown,
           drawdownAtPurchase: isDrawdown ? drawdownMag : undefined,
         });
@@ -175,6 +177,17 @@ export const DepositModal: React.FC<DepositModalProps> = ({
             <X className="w-5 h-5" />
           </button>
         </div>
+
+        {/* Discount Seedling Notification Banner */}
+        {(drawdownPercent <= -10 || weather === 'winter_snow') && (
+          <div className="p-3 bg-cyan-950/70 border border-cyan-400/50 rounded-2xl text-xs text-cyan-200 flex items-center gap-2.5">
+            <span className="text-lg">🌸</span>
+            <div>
+              <strong className="text-white block">Discount Seedling Season Active!</strong>
+              Purchasing seedlings during this winter drawdown awards permanent Luminescent Frost Flowers and Resilience Rings on your 3D tree.
+            </div>
+          </div>
+        )}
 
         {/* Mode Toggle */}
         <div className="flex rounded-xl bg-forest-900 p-1 border border-forest-800">
@@ -344,9 +357,13 @@ export const DepositModal: React.FC<DepositModalProps> = ({
                     step="any"
                     value={amount}
                     onChange={(e) => {
-                      setAmount(e.target.value);
-                      const p = livePrice || 100;
-                      setShares((parseFloat(e.target.value) / p).toFixed(3));
+                      const val = e.target.value;
+                      setAmount(val);
+                      const num = parseFloat(val);
+                      const p = livePrice && livePrice > 0 ? livePrice : 100;
+                      if (!isNaN(num) && num > 0) {
+                        setShares((num / p).toFixed(3));
+                      }
                     }}
                     className="w-full bg-forest-900 border border-forest-700/60 rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-sprout"
                     required

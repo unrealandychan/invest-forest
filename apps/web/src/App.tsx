@@ -28,6 +28,7 @@ import { SimulationModal } from './components/modals/SimulationModal';
 import { DisciplineCardModal } from './components/modals/DisciplineCardModal';
 import { SanctuaryDeedModal } from './components/modals/SanctuaryDeedModal';
 import { BrokerageImportModal } from './components/modals/BrokerageImportModal';
+import { ResetConfirmModal } from './components/modals/ResetConfirmModal';
 import { TimeOfDay } from './components/canvas/CircadianSky';
 import { TimeMachineScrubber } from './components/canvas/TimeMachineScrubber';
 import { FearEasingBanner } from './components/canvas/FearEasingBanner';
@@ -66,6 +67,7 @@ export const App: React.FC = () => {
   const [isSanctuaryDeedOpen, setIsSanctuaryDeedOpen] = React.useState(false);
   const [isBrokerageImportOpen, setIsBrokerageImportOpen] = React.useState(false);
   const [isLiquidationOpen, setIsLiquidationOpen] = React.useState(false);
+  const [isResetModalOpen, setIsResetModalOpen] = React.useState(false);
 
   // Initialize IndexedDB on first run and wire native lifecycle
   useEffect(() => {
@@ -146,6 +148,7 @@ export const App: React.FC = () => {
         onOpenSimulation={() => setIsSimulationOpen(true)}
         onOpenDisciplineCard={() => setIsDisciplineCardOpen(true)}
         onOpenSanctuaryDeed={() => setIsSanctuaryDeedOpen(true)}
+        onOpenReset={() => setIsResetModalOpen(true)}
       />
 
       {/* Main Dual-View Content Area */}
@@ -236,6 +239,7 @@ export const App: React.FC = () => {
             onOpenDisciplineCard={() => setIsDisciplineCardOpen(true)}
             onOpenSanctuaryDeed={() => setIsSanctuaryDeedOpen(true)}
             onOpenBrokerageImport={() => setIsBrokerageImportOpen(true)}
+            onOpenReset={() => setIsResetModalOpen(true)}
           />
         )}
       </main>
@@ -337,6 +341,18 @@ export const App: React.FC = () => {
       <BrokerageImportModal
         isOpen={isBrokerageImportOpen}
         onClose={() => setIsBrokerageImportOpen(false)}
+      />
+
+      <ResetConfirmModal
+        isOpen={isResetModalOpen}
+        onClose={() => setIsResetModalOpen(false)}
+        onResetComplete={(mode) => {
+          setActivePresetId(mode === 'clean' ? 'blank-soil' : 'boglehead-dca');
+          setSelectedHolding(null);
+          if (mode === 'clean') {
+            setIsGuideOpen(true);
+          }
+        }}
       />
     </div>
   );

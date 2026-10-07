@@ -32,6 +32,7 @@ interface PortfolioTerminalProps {
   onOpenDisciplineCard?: () => void;
   onOpenBrokerageImport?: () => void;
   onOpenSanctuaryDeed?: () => void;
+  onOpenReset?: () => void;
 }
 
 export const PortfolioTerminal: React.FC<PortfolioTerminalProps> = ({
@@ -47,6 +48,7 @@ export const PortfolioTerminal: React.FC<PortfolioTerminalProps> = ({
   onOpenDisciplineCard,
   onOpenBrokerageImport,
   onOpenSanctuaryDeed,
+  onOpenReset,
 }) => {
   const isPositive = summary.unrealizedGain >= 0;
 
@@ -218,6 +220,16 @@ export const PortfolioTerminal: React.FC<PortfolioTerminalProps> = ({
               >
                 <span>📥</span>
                 <span>Import Statement</span>
+              </button>
+            )}
+            {onOpenReset && (
+              <button
+                onClick={onOpenReset}
+                className="px-2.5 py-1.5 bg-red-950/40 hover:bg-red-900/60 text-red-300 border border-red-700/30 rounded-xl text-xs font-semibold transition flex items-center gap-1"
+                title="Wipe and start fresh"
+              >
+                <span>🧹</span>
+                <span className="hidden xl:inline">Wipe Data</span>
               </button>
             )}
             <button

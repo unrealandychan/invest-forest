@@ -32,6 +32,7 @@ interface NavigationHeaderProps {
   onOpenSimulation: () => void;
   onOpenDisciplineCard: () => void;
   onOpenSanctuaryDeed: () => void;
+  onOpenReset: () => void;
 }
 
 export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
@@ -51,6 +52,7 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
   onOpenSimulation,
   onOpenDisciplineCard,
   onOpenSanctuaryDeed,
+  onOpenReset,
 }) => {
   const [isPlayingAudio, setIsPlayingAudio] = React.useState(soundscapeService.getIsPlaying());
 
@@ -185,7 +187,13 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
         <div className="relative hidden md:block">
           <select
             value={activePresetId}
-            onChange={(e) => onSelectPreset(e.target.value)}
+            onChange={(e) => {
+              if (e.target.value === '__reset__') {
+                onOpenReset();
+              } else {
+                onSelectPreset(e.target.value);
+              }
+            }}
             className="appearance-none bg-forest-900/60 hover:bg-forest-800 border border-forest-700/40 text-xs text-slate-200 rounded-xl px-2.5 py-1.5 pr-7 font-medium focus:outline-none cursor-pointer"
           >
             {DEMO_PRESETS.map((p) => (
@@ -193,6 +201,9 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
                 {p.name}
               </option>
             ))}
+            <option value="__reset__" className="bg-amber-950 text-amber-300 font-bold">
+              🧹 Wipe All Data & Start Fresh...
+            </option>
           </select>
           <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2 top-2 pointer-events-none" />
         </div>
