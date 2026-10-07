@@ -9,6 +9,8 @@ interface ForestState {
   activePresetId: string;
   weather: WeatherCondition;
   timeOfDay: TimeOfDay;
+  timeTravelYears: number;
+  timeTravelMonthlyDCA: number;
   isDepositModalOpen: boolean;
   isCoolingOffModalOpen: boolean;
   isSyncModalOpen: boolean;
@@ -19,6 +21,8 @@ interface ForestState {
   setActivePresetId: (id: string) => void;
   setWeather: (weather: WeatherCondition) => void;
   setTimeOfDay: (time: TimeOfDay) => void;
+  setTimeTravelYears: (years: number) => void;
+  setTimeTravelMonthlyDCA: (amount: number) => void;
   setDepositModalOpen: (open: boolean) => void;
   setCoolingOffModalOpen: (open: boolean) => void;
   setSyncModalOpen: (open: boolean) => void;
@@ -31,6 +35,8 @@ export const useForestStore = create<ForestState>((set) => ({
   activePresetId: 'boglehead-dca',
   weather: 'sunny',
   timeOfDay: 'day',
+  timeTravelYears: 0,
+  timeTravelMonthlyDCA: 500,
   isDepositModalOpen: false,
   isCoolingOffModalOpen: false,
   isSyncModalOpen: false,
@@ -41,6 +47,8 @@ export const useForestStore = create<ForestState>((set) => ({
   setActivePresetId: (id) => set({ activePresetId: id }),
   setWeather: (weather) => set({ weather }),
   setTimeOfDay: (time) => set({ timeOfDay: time }),
+  setTimeTravelYears: (years) => set({ timeTravelYears: years }),
+  setTimeTravelMonthlyDCA: (amount) => set({ timeTravelMonthlyDCA: amount }),
   setDepositModalOpen: (open) => set({ isDepositModalOpen: open }),
   setCoolingOffModalOpen: (open) => set({ isCoolingOffModalOpen: open }),
   setSyncModalOpen: (open) => set({ isSyncModalOpen: open }),

@@ -46,6 +46,20 @@ export async function addTransaction(tx: Omit<Transaction, 'id'>): Promise<Trans
     } else if (fullTx.type === 'withdrawal') {
       currentCash = Math.max(0, currentCash - fullTx.amount);
     } else if (fullTx.type === 'buy') {
+      // If buying with new DCA capital (cash balance < purchase amount), record funding deposit
+      if (currentCash < fullTx.amount) {
+        const fundingShortfall = fullTx.amount - currentCash;
+        const fundingTx: Transaction = {
+          id: `dep-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+          date: fullTx.date,
+          type: 'deposit',
+          assetClass: 'cash',
+          amount: fundingShortfall,
+          note: `Disciplined DCA funding for ${fullTx.symbol || 'investment'}`,
+        };
+        await db.transactions.add(fundingTx);
+        currentCash += fundingShortfall;
+      }
       currentCash = Math.max(0, currentCash - fullTx.amount);
       if (fullTx.symbol) {
         const existing = await db.holdings.get(fullTx.symbol);

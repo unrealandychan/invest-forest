@@ -20,12 +20,17 @@ export function calculateXIRR(
   const asOfDate = new Date(asOfDateStr);
   const flows: CashFlow[] = [];
 
+  const hasDeposits = transactions.some((t) => t.type === 'deposit');
+
   for (const tx of transactions) {
     const txDate = new Date(tx.date);
     if (isNaN(txDate.getTime()) || txDate > asOfDate) continue;
 
     if (tx.type === 'deposit') {
       // Inflow into portfolio -> negative from investor's perspective
+      flows.push({ date: txDate, amount: -Math.abs(tx.amount) });
+    } else if (tx.type === 'buy' && !hasDeposits) {
+      // Direct asset purchase without separate deposit record
       flows.push({ date: txDate, amount: -Math.abs(tx.amount) });
     } else if (tx.type === 'withdrawal') {
       // Outflow to investor -> positive

@@ -12,6 +12,7 @@ interface ForestSceneProps {
   cashBalance: number;
   weather: WeatherCondition;
   timeOfDay?: TimeOfDay;
+  timeTravelYears?: number;
   selectedHolding: Holding | null;
   onSelectHolding: (holding: Holding | null) => void;
   totalValue?: number;
@@ -23,12 +24,18 @@ export const ForestScene: React.FC<ForestSceneProps> = ({
   cashBalance,
   weather,
   timeOfDay = 'day',
+  timeTravelYears = 0,
   selectedHolding,
   onSelectHolding,
-  totalValue,
-  dcaStreak,
+  totalValue = 10000,
+  dcaStreak = 3,
 }) => {
-  // Compute positions for trees in an organic spiral around the island
+  // In Time Travel mode, project meadow and tree scaling forward
+  const isTimeTraveling = timeTravelYears > 0;
+  const effectiveTotalValue = isTimeTraveling
+    ? Math.round(totalValue * Math.pow(1.095, timeTravelYears) + timeTravelYears * 6000)
+    : totalValue;
+  const effectiveDcaStreak = isTimeTraveling ? dcaStreak + timeTravelYears * 12 : dcaStreak;
   const treePositions = useMemo(() => {
     return holdings.map((_, index) => {
       if (holdings.length === 1) return [0, 0, 0] as [number, number, number];
@@ -67,8 +74,8 @@ export const ForestScene: React.FC<ForestSceneProps> = ({
           <GroundTerrain
             weather={weather}
             cashBalance={cashBalance}
-            totalValue={totalValue}
-            dcaStreak={dcaStreak}
+            totalValue={effectiveTotalValue}
+            dcaStreak={effectiveDcaStreak}
           />
 
           {holdings.map((h, i) => (
@@ -78,6 +85,7 @@ export const ForestScene: React.FC<ForestSceneProps> = ({
               position={treePositions[i]}
               isSelected={selectedHolding?.symbol === h.symbol}
               weather={weather}
+              timeTravelYears={timeTravelYears}
               onClick={() => onSelectHolding(h)}
             />
           ))}

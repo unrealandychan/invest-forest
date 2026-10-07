@@ -9,6 +9,7 @@ import {
   X,
   History,
   Sparkles,
+  TreePine,
   ShieldAlert,
 } from 'lucide-react';
 
@@ -16,12 +17,14 @@ interface SimulationModalProps {
   isOpen: boolean;
   onClose: () => void;
   currentNetWorth?: number;
+  onStartTimeTravel?: (years: number, monthlyDCA: number) => void;
 }
 
 export const SimulationModal: React.FC<SimulationModalProps> = ({
   isOpen,
   onClose,
   currentNetWorth = 5000,
+  onStartTimeTravel,
 }) => {
   const [tab, setTab] = useState<'future' | 'backtest'>('future');
   const [initialPrincipal, setInitialPrincipal] = useState<number>(Math.max(1000, Math.round(currentNetWorth)));
@@ -308,10 +311,23 @@ export const SimulationModal: React.FC<SimulationModalProps> = ({
         )}
 
         {/* Footer */}
-        <div className="flex justify-end pt-2 border-t border-forest-800/80">
+        <div className="flex items-center justify-between pt-2 border-t border-forest-800/80">
+          {onStartTimeTravel && (
+            <button
+              onClick={() => {
+                onStartTimeTravel(years, monthlyContribution);
+                onClose();
+              }}
+              className="px-4 py-2 bg-gradient-to-r from-amber-600 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 text-forest-950 font-bold rounded-xl text-xs transition shadow-md flex items-center gap-1.5"
+            >
+              <TreePine className="w-4 h-4" />
+              <span>Project Future Forest in 3D Canvas (+{years}y) 🌲</span>
+            </button>
+          )}
+
           <button
             onClick={onClose}
-            className="px-5 py-2 bg-forest-600 hover:bg-forest-500 text-white font-bold rounded-xl text-xs transition shadow-md"
+            className="px-5 py-2 bg-forest-800 hover:bg-forest-700 text-slate-200 font-semibold rounded-xl text-xs transition shadow-md ml-auto"
           >
             Close Time Machine
           </button>

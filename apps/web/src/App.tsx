@@ -27,6 +27,7 @@ import { SimulationModal } from './components/modals/SimulationModal';
 import { DisciplineCardModal } from './components/modals/DisciplineCardModal';
 import { BrokerageImportModal } from './components/modals/BrokerageImportModal';
 import { TimeOfDay } from './components/canvas/CircadianSky';
+import { TimeMachineScrubber } from './components/canvas/TimeMachineScrubber';
 import { Sparkles, Footprints, Shield, Bot } from 'lucide-react';
 import { triggerHaptic, setupNativeLifecycle } from './services/capacitorBridge';
 
@@ -42,6 +43,10 @@ export const App: React.FC = () => {
     setWeather,
     timeOfDay,
     setTimeOfDay,
+    timeTravelYears,
+    setTimeTravelYears,
+    timeTravelMonthlyDCA,
+    setTimeTravelMonthlyDCA,
     isDepositModalOpen,
     setDepositModalOpen,
     isCoolingOffModalOpen,
@@ -145,6 +150,7 @@ export const App: React.FC = () => {
               cashBalance={cashBalance}
               weather={weather}
               timeOfDay={timeOfDay}
+              timeTravelYears={timeTravelYears}
               selectedHolding={selectedHolding}
               onSelectHolding={(h) => {
                 if (h) triggerHaptic();
@@ -153,6 +159,18 @@ export const App: React.FC = () => {
               totalValue={summary.totalValue}
               dcaStreak={summary.dcaStreak}
             />
+
+            {/* Time Machine Scrubber HUD (when scrubbing future years) */}
+            {timeTravelYears > 0 && (
+              <TimeMachineScrubber
+                timeTravelYears={timeTravelYears}
+                onChangeYears={setTimeTravelYears}
+                monthlyDCA={timeTravelMonthlyDCA}
+                onChangeMonthlyDCA={setTimeTravelMonthlyDCA}
+                currentNetWorth={summary.totalValue}
+                onReset={() => setTimeTravelYears(0)}
+              />
+            )}
 
             {/* Bottom Floating Forest HUD Controls */}
             <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-forest-950/80 backdrop-blur-md border border-forest-700/50 px-4 py-2 rounded-2xl shadow-2xl z-30">
@@ -266,6 +284,11 @@ export const App: React.FC = () => {
         isOpen={isSimulationOpen}
         onClose={() => setIsSimulationOpen(false)}
         currentNetWorth={summary.totalValue}
+        onStartTimeTravel={(years, monthlyDCA) => {
+          setTimeTravelYears(years);
+          setTimeTravelMonthlyDCA(monthlyDCA);
+          setViewMode('forest');
+        }}
       />
 
       <DisciplineCardModal

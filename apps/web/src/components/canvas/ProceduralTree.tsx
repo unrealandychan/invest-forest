@@ -9,6 +9,7 @@ interface ProceduralTreeProps {
   position: [number, number, number];
   isSelected: boolean;
   weather: WeatherCondition;
+  timeTravelYears?: number;
   onClick: () => void;
 }
 
@@ -17,6 +18,7 @@ export const ProceduralTree: React.FC<ProceduralTreeProps> = ({
   position,
   isSelected,
   weather,
+  timeTravelYears = 0,
   onClick,
 }) => {
   const groupRef = useRef<THREE.Group>(null);
@@ -29,13 +31,21 @@ export const ProceduralTree: React.FC<ProceduralTreeProps> = ({
   const pulseRef = useRef(0);
 
   const metrics = calculateTreeMetrics(holding);
-  const { height, trunkRadius, foliageRadius, species, fruitCount, growthRings } = metrics;
+  
+  // Future Time Travel projected metrics
+  const isTimeTraveling = timeTravelYears > 0;
+  const growthRings = metrics.growthRings + timeTravelYears;
+  const height = metrics.height + (timeTravelYears * 0.28);
+  const trunkRadius = Math.min(0.85, metrics.trunkRadius + (timeTravelYears * 0.016));
+  const foliageRadius = metrics.foliageRadius + (timeTravelYears * 0.07);
+  const fruitCount = metrics.fruitCount > 0 ? Math.min(26, metrics.fruitCount + (timeTravelYears * 2)) : 0;
+  const species = metrics.species;
 
-  // Whenever valuation or shares change, trigger a visible growth pulse
+  // Whenever valuation, shares, or time travel changes, trigger visible growth pulse
   const valuation = holding.shares * holding.currentPrice;
   useEffect(() => {
-    pulseRef.current = 1.0; // Trigger growth pulse
-  }, [valuation, holding.shares]);
+    pulseRef.current = 1.0;
+  }, [valuation, holding.shares, timeTravelYears]);
 
   // Frame animation: wind sway, growth scale lerp, and growth pulse
   useFrame((state, delta) => {
@@ -180,10 +190,10 @@ export const ProceduralTree: React.FC<ProceduralTreeProps> = ({
               </span>
             </div>
             <div className="text-sm font-extrabold text-white mt-0.5">
-              ${valuation.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+              ${isTimeTraveling ? Math.round(valuation * Math.pow(1.095, timeTravelYears)).toLocaleString() : valuation.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
             </div>
             <div className="text-[10px] text-slate-300 mt-0.5">
-              {growthRings} {growthRings === 1 ? 'Year Ring' : 'Year Rings'} • {(height).toFixed(1)}m Canopy
+              {growthRings} {growthRings === 1 ? 'Year Ring' : 'Year Rings'} • {(height).toFixed(1)}m Canopy {isTimeTraveling ? `(+${timeTravelYears}y)` : ''}
             </div>
           </div>
         </Html>

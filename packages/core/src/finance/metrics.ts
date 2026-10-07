@@ -37,23 +37,30 @@ export function calculatePortfolioSummary(
 
   const totalValue = totalHoldingsValue + Math.max(0, cashBalance);
 
-  // 2. Net invested principal from deposits and withdrawals
-  let netDeposits = 0;
-  const depositDates: string[] = [];
-
-  // Sort transactions by date
+  // 2. Net invested principal from deposits, purchases, and withdrawals
   const sortedTx = [...transactions].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  const depositDates = new Set<string>();
+
+  let totalDeposited = 0;
+  let totalWithdrawn = 0;
+  let totalDirectBuys = 0;
 
   for (const tx of sortedTx) {
     if (tx.type === 'deposit') {
-      netDeposits += tx.amount;
-      depositDates.push(tx.date);
+      totalDeposited += tx.amount;
+      depositDates.add(tx.date);
     } else if (tx.type === 'withdrawal') {
-      netDeposits -= tx.amount;
+      totalWithdrawn += tx.amount;
+    } else if (tx.type === 'buy') {
+      totalDirectBuys += tx.amount;
+      depositDates.add(tx.date);
     }
   }
 
-  const investedPrincipal = Math.max(netDeposits, 0);
+  // Total invested principal accounts for deposits and direct buys
+  const netInvested = Math.max(totalDeposited - totalWithdrawn, totalDirectBuys);
+  const investedPrincipal = Math.max(netInvested, 0);
+
   const unrealizedGain = totalValue - investedPrincipal;
   const denominator = investedPrincipal > 0 ? investedPrincipal : 1;
   const unrealizedGainPercent = investedPrincipal > 0 ? (unrealizedGain / denominator) * 100 : 0;
@@ -76,8 +83,8 @@ export function calculatePortfolioSummary(
     };
   });
 
-  // 5. DCA Streak (count disciplined deposit milestones)
-  const dcaStreak = depositDates.length;
+  // 5. DCA Streak (count distinct disciplined deposit / buy milestones)
+  const dcaStreak = depositDates.size;
 
   // 6. Drawdown estimate (if gain is negative)
   const maxDrawdownPercent = unrealizedGainPercent < 0 ? Math.abs(unrealizedGainPercent) : 0;
