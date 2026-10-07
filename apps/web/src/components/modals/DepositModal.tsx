@@ -38,8 +38,6 @@ export const DepositModal: React.FC<DepositModalProps> = ({
   const [priceSource, setPriceSource] = useState<'live' | 'baseline'>('baseline');
   const [isFetchingPrice, setIsFetchingPrice] = useState(false);
 
-  if (!isOpen) return null;
-
   const categories = ['All', 'Broad Market', 'Dividend & Yield', 'Bonds & Fixed Income', 'Cash & Treasury', 'Satellite & Speculative'];
 
   const filteredAssets = ASSET_CATALOG.filter((a) => {
@@ -58,7 +56,7 @@ export const DepositModal: React.FC<DepositModalProps> = ({
 
   // Live price lookup when selected symbol changes
   useEffect(() => {
-    if (!currentEffectiveSymbol || currentEffectiveSymbol === 'CUSTOM') return;
+    if (!isOpen || !currentEffectiveSymbol || currentEffectiveSymbol === 'CUSTOM') return;
 
     let isMounted = true;
     setIsFetchingPrice(true);
@@ -155,6 +153,8 @@ export const DepositModal: React.FC<DepositModalProps> = ({
       setIsSubmitting(false);
     }
   };
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-md animate-in fade-in select-none">
