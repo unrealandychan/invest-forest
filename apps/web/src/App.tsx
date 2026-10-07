@@ -23,6 +23,7 @@ import { CoolingOffModal } from './components/modals/CoolingOffModal';
 import { CloudSyncModal } from './components/modals/CloudSyncModal';
 import { ForestSpiritChat } from './components/ai/ForestSpiritChat';
 import { OnboardingGuideModal } from './components/modals/OnboardingGuideModal';
+import { SimulationModal } from './components/modals/SimulationModal';
 import { Sparkles, Footprints, Shield, Bot } from 'lucide-react';
 import { triggerHaptic, setupNativeLifecycle } from './services/capacitorBridge';
 
@@ -47,6 +48,7 @@ export const App: React.FC = () => {
   } = useForestStore();
 
   const [isGuideOpen, setIsGuideOpen] = React.useState(false);
+  const [isSimulationOpen, setIsSimulationOpen] = React.useState(false);
 
   // Initialize IndexedDB on first run and wire native lifecycle
   useEffect(() => {
@@ -88,6 +90,18 @@ export const App: React.FC = () => {
     setSelectedHolding(null);
   };
 
+  const handleSelectBlankSoil = async () => {
+    setActivePresetId('blank-soil');
+    await loadPreset('blank-soil');
+    setSelectedHolding(null);
+  };
+
+  const handleSelectDemoSoil = async () => {
+    setActivePresetId('boglehead-dca');
+    await loadPreset('boglehead-dca');
+    setSelectedHolding(null);
+  };
+
   return (
     <div className="w-full h-screen flex flex-col bg-forest-950 text-slate-100 overflow-hidden font-sans select-none">
       {/* Top Navbar */}
@@ -103,6 +117,7 @@ export const App: React.FC = () => {
         onOpenSync={() => setSyncModalOpen(true)}
         onOpenAiSpirit={() => setAiSpiritOpen(true)}
         onOpenGuide={() => setIsGuideOpen(true)}
+        onOpenSimulation={() => setIsSimulationOpen(true)}
       />
 
       {/* Main Dual-View Content Area */}
@@ -165,6 +180,7 @@ export const App: React.FC = () => {
             onOpenDeposit={() => setDepositModalOpen(true)}
             onOpenPanicSell={() => setCoolingOffModalOpen(true)}
             onOpenAiSpirit={() => setAiSpiritOpen(true)}
+            onOpenSimulation={() => setIsSimulationOpen(true)}
           />
         )}
       </main>
@@ -223,6 +239,14 @@ export const App: React.FC = () => {
           setSetting('hasSeenGuide', true);
           setAiSpiritOpen(true);
         }}
+        onSelectBlankSoil={handleSelectBlankSoil}
+        onSelectDemoSoil={handleSelectDemoSoil}
+      />
+
+      <SimulationModal
+        isOpen={isSimulationOpen}
+        onClose={() => setIsSimulationOpen(false)}
+        currentNetWorth={summary.totalValue}
       />
     </div>
   );

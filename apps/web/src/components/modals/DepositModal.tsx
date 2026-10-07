@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import { AssetClass, Holding, ASSET_CATALOG, SPECIES_CATALOG } from '@invest-forest/core';
 import { addTransaction } from '../../storage/repository';
 import { triggerHaptic } from '../../services/capacitorBridge';
 import { ImpactStyle } from '@capacitor/haptics';
-import { X, Sprout, PlusCircle, Search } from 'lucide-react';
+import { X, Sprout, PlusCircle, Search, RefreshCw, Radio } from 'lucide-react';
 
 interface DepositModalProps {
   holdings: Holding[];
@@ -24,6 +24,11 @@ export const DepositModal: React.FC<DepositModalProps> = ({ holdings, isOpen, on
   const [searchFilter, setSearchFilter] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Live market price state
+  const [livePrice, setLivePrice] = useState<number | null>(null);
+  const [priceSource, setPriceSource] = useState<'live' | 'baseline'>('baseline');
+  const [isFetchingPrice, setIsFetchingPrice] = useState(false);
+
   if (!isOpen) return null;
 
   const categories = ['All', 'Broad Market', 'Dividend & Yield', 'Bonds & Fixed Income', 'Cash & Treasury', 'Satellite & Speculative'];
@@ -36,15 +41,52 @@ export const DepositModal: React.FC<DepositModalProps> = ({ holdings, isOpen, on
     return matchesCategory && matchesSearch;
   });
 
-  const currentEffectiveSymbol = customTickerMode ? (customSymbol.trim().toUpperCase() || 'CUSTOM') : selectedSymbol;
+  const currentEffectiveSymbol = customTickerMode
+    ? (customSymbol.trim().toUpperCase() || 'CUSTOM')
+    : selectedSymbol;
+
   const currentSpecies = SPECIES_CATALOG[assetClass] || SPECIES_CATALOG.broad_market;
+
+  // Live price lookup when selected symbol changes
+  useEffect(() => {
+    if (!currentEffectiveSymbol || currentEffectiveSymbol === 'CUSTOM') return;
+
+    let isMounted = true;
+    setIsFetchingPrice(true);
+
+    fetch(`/api/v1/quotes?symbols=${currentEffectiveSymbol}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (!isMounted) return;
+        const q = data?.quotes?.[currentEffectiveSymbol];
+        if (q && q.price > 0) {
+          setLivePrice(q.price);
+          setPriceSource(q.source === 'live_market' ? 'live' : 'baseline');
+          const numAmount = parseFloat(amount) || 500;
+          setShares((numAmount / q.price).toFixed(3));
+        }
+      })
+      .catch(() => {
+        // Fallback to asset catalog default
+        const fallback = ASSET_CATALOG.find((a) => a.symbol === currentEffectiveSymbol)?.defaultPrice || 100;
+        if (isMounted) {
+          setLivePrice(fallback);
+          setPriceSource('baseline');
+        }
+      })
+      .finally(() => {
+        if (isMounted) setIsFetchingPrice(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [currentEffectiveSymbol, amount]);
 
   const handleSelectAsset = (asset: typeof ASSET_CATALOG[0]) => {
     setSelectedSymbol(asset.symbol);
     setAssetClass(asset.assetClass);
     setCustomTickerMode(false);
-    const numAmount = parseFloat(amount) || 500;
-    setShares((numAmount / asset.defaultPrice).toFixed(3));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -65,7 +107,7 @@ export const DepositModal: React.FC<DepositModalProps> = ({ holdings, isOpen, on
         });
       } else {
         const numShares = parseFloat(shares) || 1;
-        const price = numAmount / numShares;
+        const price = livePrice || (numAmount / numShares);
         await addTransaction({
           date: today,
           type: 'buy',
@@ -180,7 +222,7 @@ export const DepositModal: React.FC<DepositModalProps> = ({ holdings, isOpen, on
                       <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5 pointer-events-none" />
                       <input
                         type="text"
-                        placeholder="Search ETF or Stock (e.g. VOO, SCHD, TLT, SGOV)..."
+                        placeholder="Search ETF or Stock (e.g. QQQM, VOO, SCHD, SGOV)..."
                         value={searchFilter}
                         onChange={(e) => setSearchFilter(e.target.value)}
                         className="w-full bg-forest-900 border border-forest-800 rounded-xl pl-8 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sprout"
@@ -188,7 +230,7 @@ export const DepositModal: React.FC<DepositModalProps> = ({ holdings, isOpen, on
                     </div>
 
                     {/* Asset options grid */}
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-40 overflow-y-auto pr-1">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-36 overflow-y-auto pr-1">
                       {filteredAssets.map((asset) => (
                         <button
                           key={asset.symbol}
@@ -216,7 +258,7 @@ export const DepositModal: React.FC<DepositModalProps> = ({ holdings, isOpen, on
                       <label className="block text-slate-300 mb-1">Custom Ticker Symbol</label>
                       <input
                         type="text"
-                        placeholder="e.g. NVDA, AMZN, IWM..."
+                        placeholder="e.g. QQQM, NVDA, AMZN, IWM..."
                         value={customSymbol}
                         onChange={(e) => setCustomSymbol(e.target.value.toUpperCase())}
                         className="w-full bg-forest-950 border border-forest-700 rounded-xl px-3 py-2 text-white font-mono uppercase focus:outline-none focus:border-sprout"
@@ -242,19 +284,37 @@ export const DepositModal: React.FC<DepositModalProps> = ({ holdings, isOpen, on
                 )}
               </div>
 
-              {/* Botanical Species Live Preview Card */}
-              <div className="p-3 bg-forest-900/70 border border-forest-700/40 rounded-2xl flex items-center gap-3">
-                <span
-                  className="w-4 h-4 rounded-full shrink-0 shadow"
-                  style={{ backgroundColor: currentSpecies.foliageColor }}
-                />
-                <div className="flex-1">
+              {/* Botanical Species & Live Market Price Card */}
+              <div className="p-3 bg-forest-900/70 border border-forest-700/40 rounded-2xl space-y-2">
+                <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
+                    <span
+                      className="w-3.5 h-3.5 rounded-full shrink-0 shadow"
+                      style={{ backgroundColor: currentSpecies.foliageColor }}
+                    />
                     <span className="font-bold text-white text-xs">{currentSpecies.commonName}</span>
                     <span className="text-[10px] text-sprout italic">({currentSpecies.botanicalName})</span>
                   </div>
-                  <div className="text-[10px] text-slate-400 mt-0.5">{currentSpecies.description}</div>
+
+                  {/* Real Market Price Badge */}
+                  <div className="flex items-center gap-1.5 text-[11px] font-mono">
+                    {isFetchingPrice ? (
+                      <div className="flex items-center gap-1 text-slate-400">
+                        <RefreshCw className="w-3 h-3 animate-spin text-sprout" />
+                        <span>Live quote...</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-1.5">
+                        <Radio className="w-3 h-3 text-emerald-400 animate-pulse" />
+                        <span className="text-white font-bold">${livePrice?.toFixed(2) || '100.00'}</span>
+                        <span className="text-[10px] px-1.5 py-0.2 rounded bg-forest-800 text-slate-300">
+                          {priceSource === 'live' ? 'Live Market' : 'Verified Cache'}
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 </div>
+                <div className="text-[10px] text-slate-400">{currentSpecies.description}</div>
               </div>
 
               {/* Amount and Shares */}
@@ -268,8 +328,7 @@ export const DepositModal: React.FC<DepositModalProps> = ({ holdings, isOpen, on
                     value={amount}
                     onChange={(e) => {
                       setAmount(e.target.value);
-                      const matched = ASSET_CATALOG.find((a) => a.symbol === currentEffectiveSymbol);
-                      const p = matched?.defaultPrice || 100;
+                      const p = livePrice || 100;
                       setShares((parseFloat(e.target.value) / p).toFixed(3));
                     }}
                     className="w-full bg-forest-900 border border-forest-700/60 rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-sprout"
@@ -277,7 +336,7 @@ export const DepositModal: React.FC<DepositModalProps> = ({ holdings, isOpen, on
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-300 font-medium mb-1">Estimated Shares</label>
+                  <label className="block text-slate-300 font-medium mb-1">Calculated Shares</label>
                   <input
                     type="number"
                     min="0.001"

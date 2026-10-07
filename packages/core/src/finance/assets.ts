@@ -20,6 +20,22 @@ export const ASSET_CATALOG: CatalogAsset[] = [
     description: 'Anchor of modern compounding, tracking 500 premier US enterprises.'
   },
   {
+    symbol: 'QQQM',
+    name: 'Invesco NASDAQ 100 ETF (Low Fee)',
+    assetClass: 'broad_market',
+    defaultPrice: 202.80,
+    category: 'Broad Market',
+    description: 'Cost-effective Nasdaq 100 growth index designed for long-term buy-and-hold investors.'
+  },
+  {
+    symbol: 'QQQ',
+    name: 'Invesco QQQ Trust (Nasdaq 100)',
+    assetClass: 'broad_market',
+    defaultPrice: 492.30,
+    category: 'Broad Market',
+    description: 'Top non-financial tech leaders driving global digital compounding.'
+  },
+  {
     symbol: 'VTI',
     name: 'Vanguard Total Stock Market ETF',
     assetClass: 'broad_market',
@@ -36,12 +52,20 @@ export const ASSET_CATALOG: CatalogAsset[] = [
     description: 'Pangaea index tracking thousands of global companies across 40+ nations.'
   },
   {
-    symbol: 'QQQ',
-    name: 'Invesco QQQ Trust (Nasdaq 100)',
+    symbol: 'IVV',
+    name: 'iShares Core S&P 500 ETF',
     assetClass: 'broad_market',
-    defaultPrice: 492.30,
+    defaultPrice: 486.10,
     category: 'Broad Market',
-    description: 'Top non-financial tech leaders driving global digital compounding.'
+    description: 'Ultra low-cost S&P 500 bedrock cornerstone for steady index accumulation.'
+  },
+  {
+    symbol: 'SCHG',
+    name: 'Schwab U.S. Large-Cap Growth ETF',
+    assetClass: 'broad_market',
+    defaultPrice: 94.60,
+    category: 'Broad Market',
+    description: 'Focused basket of high-expansion American blue-chip growth giants.'
   },
   {
     symbol: 'VXUS',
@@ -50,6 +74,14 @@ export const ASSET_CATALOG: CatalogAsset[] = [
     defaultPrice: 62.40,
     category: 'Broad Market',
     description: 'Ex-US diversified equity across developed and emerging market trees.'
+  },
+  {
+    symbol: 'AVUV',
+    name: 'Avantis U.S. Small Cap Value ETF',
+    assetClass: 'broad_market',
+    defaultPrice: 91.20,
+    category: 'Broad Market',
+    description: 'Fama-French small cap value tilt for historical size & value risk premiums.'
   },
 
   // Dividend & Yield
@@ -60,6 +92,14 @@ export const ASSET_CATALOG: CatalogAsset[] = [
     defaultPrice: 82.30,
     category: 'Dividend & Yield',
     description: 'High-quality cash-flow dividend payers with 10+ consecutive years of payouts.'
+  },
+  {
+    symbol: 'VIG',
+    name: 'Vanguard Dividend Appreciation ETF',
+    assetClass: 'dividend',
+    defaultPrice: 195.40,
+    category: 'Dividend & Yield',
+    description: 'Focuses on resilient companies with a track record of increasing dividends annually.'
   },
   {
     symbol: 'VYM',
@@ -85,6 +125,14 @@ export const ASSET_CATALOG: CatalogAsset[] = [
     category: 'Dividend & Yield',
     description: 'The monthly dividend real-estate company distributing steady tenant rent.'
   },
+  {
+    symbol: 'JEPI',
+    name: 'JPMorgan Equity Premium Income ETF',
+    assetClass: 'dividend',
+    defaultPrice: 57.10,
+    category: 'Dividend & Yield',
+    description: 'High monthly income through defensive equity holdings and covered call options.'
+  },
 
   // Bonds & Fixed Income
   {
@@ -94,6 +142,14 @@ export const ASSET_CATALOG: CatalogAsset[] = [
     defaultPrice: 72.40,
     category: 'Bonds & Fixed Income',
     description: 'Broad investment-grade bond shelter providing ballast against market squalls.'
+  },
+  {
+    symbol: 'AGG',
+    name: 'iShares Core U.S. Aggregate Bond ETF',
+    assetClass: 'bond',
+    defaultPrice: 97.80,
+    category: 'Bonds & Fixed Income',
+    description: 'Comprehensive US investment-grade bond market benchmark.'
   },
   {
     symbol: 'TLT',
@@ -137,6 +193,14 @@ export const ASSET_CATALOG: CatalogAsset[] = [
     category: 'Cash & Treasury',
     description: 'Short-term Treasury bills representing pristine cash liquidity.'
   },
+  {
+    symbol: 'SHY',
+    name: 'iShares 1-3 Year Treasury Bond ETF',
+    assetClass: 'cash',
+    defaultPrice: 82.20,
+    category: 'Cash & Treasury',
+    description: 'Short duration government debt offering capital preservation.'
+  },
 
   // Satellite & Speculative
   {
@@ -148,12 +212,20 @@ export const ASSET_CATALOG: CatalogAsset[] = [
     description: 'Physical gold bullion preserving purchasing power over centuries.'
   },
   {
-    symbol: 'BTC',
-    name: 'Bitcoin / Spot BTC ETP',
+    symbol: 'SMH',
+    name: 'VanEck Semiconductor ETF',
     assetClass: 'speculative',
-    defaultPrice: 68500.00,
+    defaultPrice: 238.40,
     category: 'Satellite & Speculative',
-    description: 'Digital sovereign store of value. High volatility; capped under 10% canopy.'
+    description: 'Global semiconductor infrastructure driving AI and computation hardware.'
+  },
+  {
+    symbol: 'IBIT',
+    name: 'iShares Bitcoin Trust ETF',
+    assetClass: 'speculative',
+    defaultPrice: 38.60,
+    category: 'Satellite & Speculative',
+    description: 'Spot Bitcoin institutional custody. High volatility satellite asset.'
   },
   {
     symbol: 'ARKK',

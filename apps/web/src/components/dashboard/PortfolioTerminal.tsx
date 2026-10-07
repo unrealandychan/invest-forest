@@ -27,6 +27,7 @@ interface PortfolioTerminalProps {
   onOpenDeposit: () => void;
   onOpenPanicSell: () => void;
   onOpenAiSpirit?: () => void;
+  onOpenSimulation?: () => void;
 }
 
 export const PortfolioTerminal: React.FC<PortfolioTerminalProps> = ({
@@ -37,6 +38,7 @@ export const PortfolioTerminal: React.FC<PortfolioTerminalProps> = ({
   onOpenDeposit,
   onOpenPanicSell,
   onOpenAiSpirit,
+  onOpenSimulation,
 }) => {
   const isPositive = summary.unrealizedGain >= 0;
 
@@ -165,6 +167,15 @@ export const PortfolioTerminal: React.FC<PortfolioTerminalProps> = ({
             <h2 className="text-lg font-bold text-white">Botanical Holdings Ledger</h2>
           </div>
           <div className="flex items-center gap-2">
+            {onOpenSimulation && (
+              <button
+                onClick={onOpenSimulation}
+                className="px-3 py-1.5 bg-forest-800 hover:bg-forest-700 text-sprout border border-forest-600/40 rounded-xl text-xs font-semibold transition flex items-center gap-1.5"
+              >
+                <span>⏳</span>
+                <span>Time Machine</span>
+              </button>
+            )}
             {onOpenAiSpirit && (
               <button
                 onClick={onOpenAiSpirit}

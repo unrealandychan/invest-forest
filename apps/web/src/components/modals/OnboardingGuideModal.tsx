@@ -5,10 +5,13 @@ import {
   LayoutDashboard,
   Footprints,
   Bot,
+  Sun,
   ChevronRight,
   ChevronLeft,
   X,
-  Sprout
+  Sprout,
+  Compass,
+  CheckCircle2,
 } from 'lucide-react';
 
 interface OnboardingGuideModalProps {
@@ -16,6 +19,8 @@ interface OnboardingGuideModalProps {
   onClose: () => void;
   onOpenDeposit: () => void;
   onOpenAiSpirit: () => void;
+  onSelectBlankSoil: () => void;
+  onSelectDemoSoil: () => void;
 }
 
 export const OnboardingGuideModal: React.FC<OnboardingGuideModalProps> = ({
@@ -23,8 +28,11 @@ export const OnboardingGuideModal: React.FC<OnboardingGuideModalProps> = ({
   onClose,
   onOpenDeposit,
   onOpenAiSpirit,
+  onSelectBlankSoil,
+  onSelectDemoSoil,
 }) => {
   const [currentStep, setCurrentStep] = useState(0);
+  const [chosenMode, setChosenMode] = useState<'blank' | 'demo'>('blank');
 
   if (!isOpen) return null;
 
@@ -32,107 +40,182 @@ export const OnboardingGuideModal: React.FC<OnboardingGuideModalProps> = ({
     {
       title: 'Welcome to Invest Forest 🌲',
       subtitle: 'Gamifying Patient Compounding & Long-Term Discipline',
-      icon: <TreePine className="w-8 h-8 text-sprout" />,
+      icon: <Compass className="w-7 h-7 text-sprout" />,
       content: (
         <div className="space-y-3 text-xs text-slate-300">
           <p className="text-sm font-semibold text-white">
-            Most financial apps treat you like a gambler in a casino: flashing sirens, red panic alarms, and lottery tickets.
+            Most finance apps treat you like a gambler: flashing red sirens, casino confetti, and day-trading churn.
           </p>
           <p>
-            <strong className="text-sprout">Invest Forest</strong> is different. We reframe your wealth accumulation from anxiety into a living, organic woodland.
+            <strong className="text-sprout">Invest Forest</strong> turns wealth accumulation into an organic 3D woodland where holding duration forms annual growth rings, and patience is rewarded with lush botanical growth.
           </p>
-          <div className="p-3 bg-forest-900/60 border border-forest-700/50 rounded-2xl italic text-[11px] text-amber-200">
-            &ldquo;Old trees cannot be bought overnight. The single biggest driver of long-term wealth is buying income-producing assets consistently.&rdquo; — Nick Maggiulli
-          </div>
-        </div>
-      ),
-    },
-    {
-      title: 'The Dual-View Magic 🌲 ↔ 📊',
-      subtitle: 'Tranquil 3D Forest + Institutional Terminal',
-      icon: <LayoutDashboard className="w-8 h-8 text-moss" />,
-      content: (
-        <div className="space-y-3 text-xs text-slate-300">
-          <p>You have two synchronized ways to experience your portfolio:</p>
-          <div className="grid grid-cols-2 gap-2 text-[11px]">
-            <div className="p-3 bg-forest-900/60 border border-forest-700/50 rounded-xl space-y-1">
-              <strong className="text-sprout block">🌲 3D Forest Canvas</strong>
-              <span>Interactive low-poly woodland where every asset is an organic species that grows taller and denser over time.</span>
+          <div className="p-3 bg-forest-900/70 border border-forest-700/50 rounded-2xl space-y-2">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-sprout block">
+              Choose Your Starting Forest:
+            </span>
+            <div className="grid grid-cols-2 gap-2 text-left">
+              <button
+                type="button"
+                onClick={() => setChosenMode('blank')}
+                className={`p-2.5 rounded-xl border transition ${
+                  chosenMode === 'blank'
+                    ? 'border-sprout bg-forest-800 text-white shadow-sm'
+                    : 'border-forest-800 bg-forest-950/60 text-slate-400 hover:text-white'
+                }`}
+              >
+                <div className="flex items-center gap-1.5 font-bold text-xs text-white">
+                  <span>🌱 Fresh Fertile Soil</span>
+                </div>
+                <div className="text-[10px] text-slate-400 mt-0.5">
+                  Start from $0 clean slate. Plant your first seed yourself!
+                </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setChosenMode('demo')}
+                className={`p-2.5 rounded-xl border transition ${
+                  chosenMode === 'demo'
+                    ? 'border-sprout bg-forest-800 text-white shadow-sm'
+                    : 'border-forest-800 bg-forest-950/60 text-slate-400 hover:text-white'
+                }`}
+              >
+                <div className="flex items-center gap-1.5 font-bold text-xs text-white">
+                  <span>🌲 Mature Boglehead</span>
+                </div>
+                <div className="text-[10px] text-slate-400 mt-0.5">
+                  Preloaded 5-year grove ($39k) to explore all mechanics.
+                </div>
+              </button>
             </div>
-            <div className="p-3 bg-forest-900/60 border border-forest-700/50 rounded-xl space-y-1">
-              <strong className="text-moss block">📊 Portfolio Terminal</strong>
-              <span>Institutional metrics: True Newton-Raphson XIRR, compounding multipliers, and asset allocation breakdown.</span>
-            </div>
-          </div>
-          <p className="text-slate-400">
-            Toggle effortlessly between emotional calm and financial precision using the top center switcher!
-          </p>
-        </div>
-      ),
-    },
-    {
-      title: 'Concentric Annual Growth Rings 🪵',
-      subtitle: 'Time in the Market > Timing the Market',
-      icon: <TrendingUp className="w-8 h-8 text-sunlit" />,
-      content: (
-        <div className="space-y-3 text-xs text-slate-300">
-          <p>
-            Click on any tree to open the <strong className="text-white">Botanical Cross-Section Inspector</strong>.
-          </p>
-          <p>
-            Trees don&apos;t just scale by dollar value. For every 365 days an asset remains rooted in your portfolio, a new <strong className="text-sprout">concentric growth ring</strong> is etched into the tree trunk.
-          </p>
-          <div className="p-3 bg-forest-900/60 border border-forest-700/50 rounded-2xl text-[11px] text-slate-300">
-            A 5-year Broad Market Oak possesses deep timber density that speculative traders can never replicate.
           </div>
         </div>
       ),
     },
     {
-      title: 'Market Weather & The Canopy Walk ❄️',
-      subtitle: 'Anti-Panic Selling Behavioral Guardrails',
-      icon: <Footprints className="w-8 h-8 text-amber-400" />,
+      title: 'Button 1: The Dual-View Switcher 🌲 ↔ 📊',
+      subtitle: 'Top-Center Navbar',
+      icon: <LayoutDashboard className="w-7 h-7 text-moss" />,
       content: (
         <div className="space-y-3 text-xs text-slate-300">
-          <p>
-            When the stock market drops 15% to 25%, Invest Forest doesn&apos;t flash alarming red sirens. Instead, gentle <strong className="text-blue-300">winter snowfall</strong> blankets the meadow.
-          </p>
-          <p>
-            Winter snow signals <strong className="text-white">&ldquo;Discount Seedlings&rdquo;</strong>—the most lucrative moment for disciplined Dollar-Cost Averaging.
-          </p>
-          <div className="p-3 bg-amber-950/40 border border-amber-700/50 rounded-2xl text-[11px] text-amber-200">
-            If you ever feel tempted to panic sell, the <strong className="text-white">24-Hour Canopy Walk</strong> guardrail prompts calm mindfulness before a single tree is chopped down.
+          <div className="p-3 bg-forest-900/60 border border-forest-700/50 rounded-2xl flex items-center justify-center gap-3">
+            <span className="px-3 py-1.5 rounded-xl bg-forest-600 text-white font-bold text-xs shadow flex items-center gap-1.5">
+              <TreePine className="w-3.5 h-3.5" /> 3D Forest
+            </span>
+            <span className="text-slate-500 font-bold">↔</span>
+            <span className="px-3 py-1.5 rounded-xl bg-forest-800 text-slate-300 font-bold text-xs flex items-center gap-1.5">
+              <LayoutDashboard className="w-3.5 h-3.5" /> Terminal
+            </span>
           </div>
+          <p>
+            <strong className="text-white">What it does:</strong> Toggles seamlessly between your serene 3D woodland and an institutional finance dashboard.
+          </p>
+          <ul className="space-y-1 text-slate-400 list-disc list-inside">
+            <li><strong className="text-sprout">Forest View:</strong> Orbit, zoom, and inspect your trees and wildlife in 3D.</li>
+            <li><strong className="text-moss">Terminal View:</strong> Real-time XIRR calculations, compounding multipliers, asset allocations, and transaction ledgers.</li>
+          </ul>
         </div>
       ),
     },
     {
-      title: 'Meet the Canopy Spirit (AI Guide) 🦉',
-      subtitle: 'Behavioral Financial Intelligence On Demand',
-      icon: <Bot className="w-8 h-8 text-emerald-400" />,
+      title: 'Button 2: Plant / DCA (Add Assets) 🌱',
+      subtitle: 'Top-Right Navbar',
+      icon: <Sprout className="w-7 h-7 text-sprout" />,
       content: (
         <div className="space-y-3 text-xs text-slate-300">
-          <p>
-            The <strong className="text-sprout">Canopy Spirit</strong> is your AI mentor, powered by the corpus of Morgan Housel (*The Psychology of Money*) and Jack Bogle.
-          </p>
-          <p>
-            Ask it to audit your forest ecology, advise on asset allocation, interpret market squalls, or explain botanical lore for any ETF.
-          </p>
-          <p className="text-slate-400">
-            It works 100% locally with zero-knowledge privacy—your financial balances never leave your machine unencrypted.
-          </p>
-          <div className="pt-1">
+          <div className="p-3 bg-forest-900/60 border border-forest-700/50 rounded-2xl flex items-center justify-center">
             <button
+              type="button"
+              onClick={() => {
+                onClose();
+                onOpenDeposit();
+              }}
+              className="px-4 py-1.5 bg-forest-500 hover:bg-forest-400 text-forest-950 font-bold rounded-xl text-xs shadow-md flex items-center gap-1.5 transition"
+            >
+              <Sprout className="w-4 h-4" /> Try Plant / DCA Now
+            </button>
+          </div>
+          <p>
+            <strong className="text-white">How it works:</strong> Click to invest. Choose from 18+ index ETFs (like <strong className="text-sprout">VOO</strong>, <strong className="text-sprout">QQQM</strong>, <strong className="text-sprout">SCHD</strong>, <strong className="text-sprout">BND</strong>, <strong className="text-sprout">SGOV</strong>) or type any custom ticker!
+          </p>
+          <p className="text-slate-400">
+            Real market quotes are automatically fetched. When you execute a deposit, golden confetti showers the meadow, and a new seedling sprouts from the soil!
+          </p>
+        </div>
+      ),
+    },
+    {
+      title: 'Button 3: 3D Tree Rings & Lore 🪵',
+      subtitle: 'Interactive Canvas Click',
+      icon: <TrendingUp className="w-7 h-7 text-sunlit" />,
+      content: (
+        <div className="space-y-3 text-xs text-slate-300">
+          <div className="p-3 bg-forest-900/60 border border-forest-700/50 rounded-2xl text-center">
+            <span className="text-xs font-bold text-sprout">
+              🖱️ Left-Click any tree on the meadow
+            </span>
+          </div>
+          <p>
+            <strong className="text-white">Concentric Annual Rings:</strong> Old trees cannot be bought overnight. For every 365 days you hold an investment, a new concentric growth ring is etched into the tree trunk cross-section.
+          </p>
+          <p className="text-slate-400">
+            Clicking a tree opens its botanical lore, annual growth ring cross-section, and total compounded harvest history.
+          </p>
+        </div>
+      ),
+    },
+    {
+      title: 'Button 4: Market Weather Simulator ❄️',
+      subtitle: 'Top-Right Weather Pill',
+      icon: <Sun className="w-7 h-7 text-sunlit" />,
+      content: (
+        <div className="space-y-3 text-xs text-slate-300">
+          <div className="p-3 bg-forest-900/60 border border-forest-700/50 rounded-2xl flex items-center justify-center gap-2">
+            <span className="px-3 py-1 bg-forest-900 border border-forest-700 text-xs text-slate-200 rounded-xl flex items-center gap-1.5">
+              <Sun className="w-3.5 h-3.5 text-sunlit" /> Sunny Canopy
+            </span>
+            <span className="text-slate-500">→</span>
+            <span className="px-3 py-1 bg-forest-900 border border-forest-700 text-xs text-blue-200 rounded-xl flex items-center gap-1.5">
+              ❄️ Winter Snow
+            </span>
+          </div>
+          <p>
+            <strong className="text-white">Reframing Volatility:</strong> Market drawdowns (-10% to -25%) are rendered as gentle winter snow that enriches root soil.
+          </p>
+          <p className="text-slate-400">
+            Click this button anytime to cycle between Sunny, Autumn Breeze, Soil Rain, and Winter Snow to observe how the forest weathers market seasons!
+          </p>
+        </div>
+      ),
+    },
+    {
+      title: 'Button 5: Canopy Spirit AI & Canopy Walk 🦉',
+      subtitle: 'Navbar & Bottom HUD',
+      icon: <Bot className="w-7 h-7 text-emerald-400" />,
+      content: (
+        <div className="space-y-3 text-xs text-slate-300">
+          <div className="p-3 bg-forest-900/60 border border-forest-700/50 rounded-2xl flex items-center justify-center gap-3">
+            <button
+              type="button"
               onClick={() => {
                 onClose();
                 onOpenAiSpirit();
               }}
-              className="px-3.5 py-1.5 rounded-xl bg-forest-800 hover:bg-forest-700 text-sprout border border-forest-600/50 text-xs font-semibold flex items-center gap-1.5 transition"
+              className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-800 to-teal-700 hover:from-emerald-700 hover:to-teal-600 text-white font-bold text-xs flex items-center gap-1.5 transition"
             >
-              <Bot className="w-3.5 h-3.5 text-sunlit" />
-              <span>Talk to Canopy Spirit Now 🦉</span>
+              <span>🦉</span> Open Canopy AI
             </button>
+            <span className="px-3 py-1.5 rounded-xl bg-forest-900 border border-amber-600/50 text-amber-300 font-bold text-xs flex items-center gap-1.5">
+              <Footprints className="w-3.5 h-3.5" /> Canopy Walk
+            </span>
           </div>
+          <p>
+            <strong className="text-white">Behavioral Finance Guardians:</strong>
+          </p>
+          <ul className="space-y-1 text-slate-400 list-disc list-inside">
+            <li><strong className="text-emerald-300">Canopy AI:</strong> Requests deep Ecology Audits, asks compounding questions, or explains botanical lore.</li>
+            <li><strong className="text-amber-300">24-Hour Canopy Walk:</strong> Intercepts simulated panic selling with guided reflection so no trees are chopped down impulsively.</li>
+          </ul>
         </div>
       ),
     },
@@ -144,8 +227,17 @@ export const OnboardingGuideModal: React.FC<OnboardingGuideModalProps> = ({
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
-      onClose();
+      finalizeOnboarding();
     }
+  };
+
+  const finalizeOnboarding = () => {
+    if (chosenMode === 'blank') {
+      onSelectBlankSoil();
+    } else {
+      onSelectDemoSoil();
+    }
+    onClose();
   };
 
   const handlePrev = () => {
@@ -155,8 +247,8 @@ export const OnboardingGuideModal: React.FC<OnboardingGuideModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-in fade-in select-none">
-      <div className="bg-forest-950 border border-forest-600/50 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative flex flex-col space-y-5">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-in fade-in select-none">
+      <div className="bg-forest-950 border border-forest-600/50 rounded-3xl max-w-lg w-full p-5 sm:p-6 shadow-2xl relative flex flex-col space-y-4">
         {/* Header */}
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
@@ -174,7 +266,7 @@ export const OnboardingGuideModal: React.FC<OnboardingGuideModalProps> = ({
             </div>
           </div>
           <button
-            onClick={onClose}
+            onClick={finalizeOnboarding}
             className="p-1 rounded-full bg-forest-900 hover:bg-forest-800 text-slate-400 hover:text-white transition"
           >
             <X className="w-5 h-5" />
@@ -182,7 +274,7 @@ export const OnboardingGuideModal: React.FC<OnboardingGuideModalProps> = ({
         </div>
 
         {/* Step Body */}
-        <div className="py-2 min-h-[160px]">{step.content}</div>
+        <div className="py-2 min-h-[170px]">{step.content}</div>
 
         {/* Step Indicators */}
         <div className="flex items-center justify-center gap-1.5 pt-1">
@@ -211,14 +303,13 @@ export const OnboardingGuideModal: React.FC<OnboardingGuideModalProps> = ({
           <div className="flex items-center gap-2">
             {currentStep === steps.length - 1 ? (
               <button
-                onClick={() => {
-                  onClose();
-                  onOpenDeposit();
-                }}
+                onClick={finalizeOnboarding}
                 className="px-5 py-2 bg-forest-500 hover:bg-forest-400 text-forest-950 font-bold rounded-xl text-xs transition shadow-md flex items-center gap-1.5"
               >
-                <Sprout className="w-4 h-4" />
-                <span>Plant First Seedling 🌱</span>
+                <CheckCircle2 className="w-4 h-4" />
+                <span>
+                  {chosenMode === 'blank' ? 'Start Fresh ($0 Soil) 🌱' : 'Enter Demo Forest 🌲'}
+                </span>
               </button>
             ) : (
               <button

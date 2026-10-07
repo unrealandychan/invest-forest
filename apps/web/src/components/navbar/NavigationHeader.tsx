@@ -24,6 +24,7 @@ interface NavigationHeaderProps {
   onOpenSync: () => void;
   onOpenAiSpirit: () => void;
   onOpenGuide: () => void;
+  onOpenSimulation: () => void;
 }
 
 export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
@@ -38,6 +39,7 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
   onOpenSync,
   onOpenAiSpirit,
   onOpenGuide,
+  onOpenSimulation,
 }) => {
   const weatherIcons: Record<WeatherCondition, React.ReactNode> = {
     sunny: <Sun className="w-3.5 h-3.5 text-sunlit" />,
@@ -149,6 +151,16 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
         >
           <span>📖</span>
           <span className="hidden md:inline font-medium">Guide</span>
+        </button>
+
+        {/* Long-Term Compounding Simulator Button */}
+        <button
+          onClick={onOpenSimulation}
+          title="Long-Term Compounding Simulation & Backtesting"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-forest-900/60 hover:bg-forest-800 border border-forest-700/40 text-xs text-slate-300 hover:text-white transition"
+        >
+          <span>⏳</span>
+          <span className="hidden md:inline font-medium">Simulator</span>
         </button>
 
         {/* AI Forest Spirit CTA */}

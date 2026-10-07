@@ -2,6 +2,14 @@ import { PresetScenario } from './finance/types';
 
 export const DEMO_PRESETS: PresetScenario[] = [
   {
+    id: 'blank-soil',
+    name: 'Fresh Fertile Soil (Blank Canvas - $0)',
+    description: 'A clean, untouched forest meadow ready for your very first investment seed. Start from scratch with complete sovereignty.',
+    cashBalance: 0,
+    holdings: [],
+    transactions: [],
+  },
+  {
     id: 'boglehead-dca',
     name: 'The Disciplined Boglehead (5-Year Canopy)',
     description: 'A thriving mature forest cultivated through consistent dollar-cost averaging into broad market index funds and bonds.',
