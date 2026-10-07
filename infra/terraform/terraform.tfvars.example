@@ -1,0 +1,4 @@
+project_id      = "my-invest-forest-gcp-project"
+region          = "us-central1"
+environment     = "dev"
+container_image = "us-central1-docker.pkg.dev/my-invest-forest-gcp-project/invest-forest-repo/server:latest"

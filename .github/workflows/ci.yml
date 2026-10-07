@@ -1,0 +1,65 @@
+name: Invest Forest CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test-and-verify:
+    name: Build, Test & Lint Matrix
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.10.0
+
+      - name: Install dependencies
+        run: npm install
+
+      # 1. Domain Core (Financial Math & Species)
+      - name: Build & Test Core Domain
+        run: |
+          npm --workspace=@invest-forest/core run build
+          npm --workspace=@invest-forest/core run test
+
+      # 2. Web Frontend (Vite / React Three Fiber / Tailwind)
+      - name: Build Web Application
+        run: npm --workspace=@invest-forest/web run build
+
+      # 3. Backend Microservice (Node / Express / Quotes & Sync)
+      - name: Build & Test Backend Server
+        run: |
+          npm --workspace=@invest-forest/server run build
+          npm --workspace=@invest-forest/server run test
+
+      # 4. Capacitor Mobile Cross-Platform Verification
+      - name: Verify Capacitor Mobile Configuration
+        run: |
+          cd apps/web
+          npx cap config
+
+      # 5. GCP Infrastructure as Code (Terraform)
+      - name: Validate Terraform IaC
+        run: |
+          cd infra/terraform
+          terraform init -backend=false
+          terraform fmt -check
+          terraform validate
+
+      # 6. Container Packaging Verification
+      - name: Build Production Backend Docker Image
+        run: |
+          docker build -t invest-forest-server:ci -f apps/server/Dockerfile .

@@ -1,0 +1,55 @@
+export type AssetClass = 'broad_market' | 'dividend' | 'bond' | 'cash' | 'speculative';
+
+export type TransactionType = 'deposit' | 'withdrawal' | 'buy' | 'sell' | 'dividend';
+
+export interface Transaction {
+  id: string;
+  date: string; // ISO YYYY-MM-DD
+  type: TransactionType;
+  symbol?: string;
+  assetClass: AssetClass;
+  shares?: number;
+  price?: number;
+  amount: number; // Positive magnitude of transaction
+  note?: string;
+}
+
+export interface Holding {
+  symbol: string;
+  name: string;
+  assetClass: AssetClass;
+  shares: number;
+  costBasis: number;
+  currentPrice: number;
+  firstPurchasedDate: string;
+  lastPurchasedDate: string;
+}
+
+export interface AssetAllocationItem {
+  assetClass: AssetClass;
+  value: number;
+  percentage: number; // 0 to 100
+  targetPercentage: number;
+}
+
+export interface PortfolioSummary {
+  totalValue: number;
+  investedPrincipal: number;
+  unrealizedGain: number;
+  unrealizedGainPercent: number;
+  xirr: number;
+  compoundingMultiplier: number;
+  cashBalance: number;
+  dcaStreak: number;
+  assetAllocations: AssetAllocationItem[];
+  maxDrawdownPercent: number;
+}
+
+export interface PresetScenario {
+  id: string;
+  name: string;
+  description: string;
+  holdings: Holding[];
+  transactions: Transaction[];
+  cashBalance: number;
+}

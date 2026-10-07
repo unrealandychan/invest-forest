@@ -1,0 +1,22 @@
+{
+  "name": "invest-forest-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "dev:web": "npm --workspace=@invest-forest/web run dev",
+    "dev:server": "npm --workspace=@invest-forest/server run dev",
+    "test:core": "npm --workspace=@invest-forest/core run test",
+    "test:server": "npm --workspace=@invest-forest/server run test",
+    "tf:validate": "terraform -chdir=infra/terraform fmt -check && terraform -chdir=infra/terraform validate"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
+}
