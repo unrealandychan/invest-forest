@@ -11,4 +11,5 @@ export * from './ecosystem/species';
 export * from './ecosystem/weather';
 export * from './ecosystem/discipline';
 export * from './ecosystem/socialCard';
+export * from './ecosystem/biomes';
 export * from './presets';

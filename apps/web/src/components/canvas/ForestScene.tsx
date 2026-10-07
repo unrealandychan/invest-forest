@@ -1,14 +1,16 @@
 import React, { useMemo } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, ContactShadows } from '@react-three/drei';
-import { Holding, WeatherCondition } from '@invest-forest/core';
+import { Holding, WeatherCondition, HarvestMemorial } from '@invest-forest/core';
 import { ProceduralTree } from './ProceduralTree';
 import { GroundTerrain } from './GroundTerrain';
 import { WeatherSystem } from './WeatherSystem';
 import { CircadianSky, TimeOfDay } from './CircadianSky';
+import { HarvestStump } from './HarvestStump';
 
 interface ForestSceneProps {
   holdings: Holding[];
+  memorials?: HarvestMemorial[];
   cashBalance: number;
   weather: WeatherCondition;
   timeOfDay?: TimeOfDay;
@@ -21,6 +23,7 @@ interface ForestSceneProps {
 
 export const ForestScene: React.FC<ForestSceneProps> = ({
   holdings,
+  memorials = [],
   cashBalance,
   weather,
   timeOfDay = 'day',
@@ -89,6 +92,15 @@ export const ForestScene: React.FC<ForestSceneProps> = ({
               onClick={() => onSelectHolding(h)}
             />
           ))}
+
+          {/* Render Consecrated Real-Life Harvest Memorial Stumps */}
+          {memorials.map((m, idx) => {
+            const angle = (idx * 2.1) + 1.2;
+            const r = 4.2 + (idx * 1.5) % 3.0;
+            const mx = Math.cos(angle) * r;
+            const mz = Math.sin(angle) * r;
+            return <HarvestStump key={m.id} memorial={m} position={[mx, 0, mz]} />;
+          })}
 
           <ContactShadows
             position={[0, 0.02, 0]}

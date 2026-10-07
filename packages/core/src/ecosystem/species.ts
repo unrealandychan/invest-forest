@@ -65,6 +65,9 @@ export interface BotanicalTreeMetrics {
   species: TreeSpeciesProfile;
   holdingDurationYears: number;
   growthRings: number;
+  resilienceRings: number;
+  totalRings: number;
+  isWinterBloom: boolean;
   height: number;
   trunkRadius: number;
   foliageRadius: number;
@@ -110,11 +113,19 @@ export function calculateTreeMetrics(
   // Health multiplier: 1.0 is healthy; reduced in severe unrealized loss
   const healthMultiplier = gainMultiplier < -0.3 ? 0.6 : gainMultiplier < 0 ? 0.85 : 1.1;
 
+  // Winter Bloom & Resilience rings
+  const isWinterBloom = gainMultiplier < 0 || holding.costBasis > holdingValue;
+  const resilienceRings = isWinterBloom ? Math.min(3, Math.max(1, Math.floor(growthRings * 0.5))) : 0;
+  const totalRings = growthRings + resilienceRings;
+
   return {
     holding,
     species,
     holdingDurationYears: Math.round(holdingDurationYears * 10) / 10,
     growthRings,
+    resilienceRings,
+    totalRings,
+    isWinterBloom,
     height: Math.round(height * 100) / 100,
     trunkRadius: Math.round(trunkRadius * 100) / 100,
     foliageRadius: Math.round(foliageRadius * 100) / 100,

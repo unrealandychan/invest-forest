@@ -25,11 +25,13 @@ interface PortfolioTerminalProps {
   transactions: Transaction[];
   onSelectHolding: (holding: Holding) => void;
   onOpenDeposit: () => void;
-  onOpenPanicSell: () => void;
+  onOpenPanicSell?: () => void;
+  onOpenLiquidation?: () => void;
   onOpenAiSpirit?: () => void;
   onOpenSimulation?: () => void;
   onOpenDisciplineCard?: () => void;
   onOpenBrokerageImport?: () => void;
+  onOpenSanctuaryDeed?: () => void;
 }
 
 export const PortfolioTerminal: React.FC<PortfolioTerminalProps> = ({
@@ -39,10 +41,12 @@ export const PortfolioTerminal: React.FC<PortfolioTerminalProps> = ({
   onSelectHolding,
   onOpenDeposit,
   onOpenPanicSell,
+  onOpenLiquidation,
   onOpenAiSpirit,
   onOpenSimulation,
   onOpenDisciplineCard,
   onOpenBrokerageImport,
+  onOpenSanctuaryDeed,
 }) => {
   const isPositive = summary.unrealizedGain >= 0;
 
@@ -198,6 +202,15 @@ export const PortfolioTerminal: React.FC<PortfolioTerminalProps> = ({
                 <span>AI Ecology Audit</span>
               </button>
             )}
+            {onOpenSanctuaryDeed && (
+              <button
+                onClick={onOpenSanctuaryDeed}
+                className="px-3 py-1.5 bg-forest-800 hover:bg-forest-700 text-yellow-300 border border-yellow-600/40 rounded-xl text-xs font-semibold transition flex items-center gap-1.5"
+              >
+                <span>📜</span>
+                <span>Sanctuary Deed</span>
+              </button>
+            )}
             {onOpenBrokerageImport && (
               <button
                 onClick={onOpenBrokerageImport}
@@ -215,10 +228,11 @@ export const PortfolioTerminal: React.FC<PortfolioTerminalProps> = ({
               <span>Plant / DCA</span>
             </button>
             <button
-              onClick={onOpenPanicSell}
-              className="px-3 py-1.5 bg-red-950/60 hover:bg-red-900/80 text-red-300 border border-red-700/40 rounded-xl text-xs font-medium transition"
+              onClick={onOpenLiquidation || onOpenPanicSell}
+              className="px-3 py-1.5 bg-amber-950/60 hover:bg-amber-900/80 text-amber-300 border border-amber-700/50 rounded-xl text-xs font-semibold transition flex items-center gap-1.5"
             >
-              Simulate Panic Sell
+              <span>🚪</span>
+              <span>Harvest / Liquidate</span>
             </button>
           </div>
         </div>

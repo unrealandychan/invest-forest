@@ -11,7 +11,17 @@ export const TreeInspectModal: React.FC<TreeInspectModalProps> = ({ holding, onC
   if (!holding) return null;
 
   const metrics = calculateTreeMetrics(holding);
-  const { species, growthRings, holdingDurationYears, height, trunkRadius, fruitCount } = metrics;
+  const {
+    species,
+    growthRings,
+    resilienceRings,
+    totalRings,
+    isWinterBloom,
+    holdingDurationYears,
+    height,
+    trunkRadius,
+    fruitCount
+  } = metrics;
   const valuation = holding.shares * holding.currentPrice;
   const gain = valuation - holding.costBasis;
   const gainPct = holding.costBasis > 0 ? (gain / holding.costBasis) * 100 : 0;
@@ -46,7 +56,7 @@ export const TreeInspectModal: React.FC<TreeInspectModalProps> = ({ holding, onC
         <div className="bg-forest-900/60 border border-forest-700/40 rounded-2xl p-4 flex flex-col items-center justify-center space-y-3">
           <div className="text-xs font-semibold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
             <Award className="w-4 h-4 text-sprout" />
-            <span>Botanical Cross-Section: {growthRings} Annual Growth Rings</span>
+            <span>Botanical Cross-Section: {totalRings} Total Rings ({growthRings} Annual + {resilienceRings} Resilience)</span>
           </div>
 
           <div className="relative w-44 h-44 flex items-center justify-center">
@@ -56,8 +66,9 @@ export const TreeInspectModal: React.FC<TreeInspectModalProps> = ({ holding, onC
               <circle cx="100" cy="100" r="88" fill="#5c4033" stroke="#785949" strokeWidth="2" />
 
               {/* Concentric Annual Rings */}
-              {Array.from({ length: Math.min(growthRings, 10) }).map((_, i) => {
-                const radius = 20 + ((i + 1) / Math.min(growthRings, 10)) * 62;
+              {Array.from({ length: Math.min(totalRings, 12) }).map((_, i) => {
+                const radius = 20 + ((i + 1) / Math.min(totalRings, 12)) * 62;
+                const isResilienceRing = i >= growthRings;
                 return (
                   <circle
                     key={i}
@@ -65,10 +76,10 @@ export const TreeInspectModal: React.FC<TreeInspectModalProps> = ({ holding, onC
                     cy="100"
                     r={radius}
                     fill="none"
-                    stroke="#c4dfd0"
-                    strokeWidth="1.8"
-                    strokeDasharray={i % 2 === 0 ? '4 2' : 'none'}
-                    opacity={0.65 + (i / 10) * 0.35}
+                    stroke={isResilienceRing ? '#48cae4' : '#c4dfd0'}
+                    strokeWidth={isResilienceRing ? 2.5 : 1.8}
+                    strokeDasharray={isResilienceRing ? '3 3' : (i % 2 === 0 ? '4 2' : 'none')}
+                    opacity={0.7 + (i / 12) * 0.3}
                   />
                 );
               })}
@@ -80,8 +91,16 @@ export const TreeInspectModal: React.FC<TreeInspectModalProps> = ({ holding, onC
               Y0
             </div>
           </div>
+
+          {isWinterBloom && (
+            <div className="p-2 px-3 bg-cyan-950/60 border border-cyan-500/40 rounded-xl text-[11px] text-cyan-200 flex items-center gap-1.5">
+              <span>❄️</span>
+              <span><strong>Winter Bloom Active:</strong> +{resilienceRings} Resilience Rings awarded for patient holding through market winter!</span>
+            </div>
+          )}
+
           <div className="text-[11px] text-slate-400 text-center max-w-sm">
-            Old growth cannot be rushed or simulated. Each concentric band represents 365 days of patient market compounding.
+            Old growth cannot be rushed or simulated. Each concentric band represents patient market compounding and courageous bear market accumulation.
           </div>
         </div>
 

@@ -20,15 +20,18 @@ import { NavigationHeader } from './components/navbar/NavigationHeader';
 import { TreeInspectModal } from './components/modals/TreeInspectModal';
 import { DepositModal } from './components/modals/DepositModal';
 import { CoolingOffModal } from './components/modals/CoolingOffModal';
+import { LiquidationModal } from './components/modals/LiquidationModal';
 import { CloudSyncModal } from './components/modals/CloudSyncModal';
 import { ForestSpiritChat } from './components/ai/ForestSpiritChat';
 import { OnboardingGuideModal } from './components/modals/OnboardingGuideModal';
 import { SimulationModal } from './components/modals/SimulationModal';
 import { DisciplineCardModal } from './components/modals/DisciplineCardModal';
+import { SanctuaryDeedModal } from './components/modals/SanctuaryDeedModal';
 import { BrokerageImportModal } from './components/modals/BrokerageImportModal';
 import { TimeOfDay } from './components/canvas/CircadianSky';
 import { TimeMachineScrubber } from './components/canvas/TimeMachineScrubber';
-import { Sparkles, Footprints, Shield, Bot } from 'lucide-react';
+import { FearEasingBanner } from './components/canvas/FearEasingBanner';
+import { Sparkles, Shield, Bot } from 'lucide-react';
 import { triggerHaptic, setupNativeLifecycle } from './services/capacitorBridge';
 
 export const App: React.FC = () => {
@@ -60,7 +63,9 @@ export const App: React.FC = () => {
   const [isGuideOpen, setIsGuideOpen] = React.useState(false);
   const [isSimulationOpen, setIsSimulationOpen] = React.useState(false);
   const [isDisciplineCardOpen, setIsDisciplineCardOpen] = React.useState(false);
+  const [isSanctuaryDeedOpen, setIsSanctuaryDeedOpen] = React.useState(false);
   const [isBrokerageImportOpen, setIsBrokerageImportOpen] = React.useState(false);
+  const [isLiquidationOpen, setIsLiquidationOpen] = React.useState(false);
 
   // Initialize IndexedDB on first run and wire native lifecycle
   useEffect(() => {
@@ -77,6 +82,7 @@ export const App: React.FC = () => {
   // Live queries from Dexie.js (reactive updates across all tabs and components)
   const holdings = useLiveQuery(() => db.holdings.toArray(), []) || [];
   const transactions = useLiveQuery(() => db.transactions.toArray(), []) || [];
+  const memorials = useLiveQuery(() => db.harvestMemorials.toArray(), []) || [];
   const cashBalance = useLiveQuery(async () => getSetting<number>('cashBalance', 1250), []) ?? 1250;
 
   // Calculate live portfolio metrics using pure TypeScript domain core
@@ -139,6 +145,7 @@ export const App: React.FC = () => {
         onOpenGuide={() => setIsGuideOpen(true)}
         onOpenSimulation={() => setIsSimulationOpen(true)}
         onOpenDisciplineCard={() => setIsDisciplineCardOpen(true)}
+        onOpenSanctuaryDeed={() => setIsSanctuaryDeedOpen(true)}
       />
 
       {/* Main Dual-View Content Area */}
@@ -147,6 +154,7 @@ export const App: React.FC = () => {
           <div className="relative w-full h-full">
             <ForestScene
               holdings={holdings}
+              memorials={memorials}
               cashBalance={cashBalance}
               weather={weather}
               timeOfDay={timeOfDay}
@@ -158,6 +166,13 @@ export const App: React.FC = () => {
               }}
               totalValue={summary.totalValue}
               dcaStreak={summary.dcaStreak}
+            />
+
+            {/* Fear-Easing Winter Grounding Banner */}
+            <FearEasingBanner
+              unrealizedGainPercent={summary.unrealizedGainPercent}
+              weather={weather}
+              onOpenDeposit={() => setDepositModalOpen(true)}
             />
 
             {/* Time Machine Scrubber HUD (when scrubbing future years) */}
@@ -185,11 +200,11 @@ export const App: React.FC = () => {
               </div>
 
               <button
-                onClick={() => setCoolingOffModalOpen(true)}
+                onClick={() => setIsLiquidationOpen(true)}
                 className="flex items-center gap-1.5 text-xs text-amber-300 hover:text-amber-200 transition font-medium"
               >
-                <Footprints className="w-3.5 h-3.5 text-amber-400" />
-                <span>Canopy Walk</span>
+                <span>🚪</span>
+                <span>Two Doors</span>
               </button>
 
               <button
@@ -213,10 +228,12 @@ export const App: React.FC = () => {
             transactions={transactions}
             onSelectHolding={(h: Holding) => setSelectedHolding(h)}
             onOpenDeposit={() => setDepositModalOpen(true)}
-            onOpenPanicSell={() => setCoolingOffModalOpen(true)}
+            onOpenPanicSell={() => setIsLiquidationOpen(true)}
+            onOpenLiquidation={() => setIsLiquidationOpen(true)}
             onOpenAiSpirit={() => setAiSpiritOpen(true)}
             onOpenSimulation={() => setIsSimulationOpen(true)}
             onOpenDisciplineCard={() => setIsDisciplineCardOpen(true)}
+            onOpenSanctuaryDeed={() => setIsSanctuaryDeedOpen(true)}
             onOpenBrokerageImport={() => setIsBrokerageImportOpen(true)}
           />
         )}
@@ -237,6 +254,14 @@ export const App: React.FC = () => {
       <CoolingOffModal
         isOpen={isCoolingOffModalOpen}
         onClose={() => setCoolingOffModalOpen(false)}
+      />
+
+      <LiquidationModal
+        isOpen={isLiquidationOpen}
+        onClose={() => setIsLiquidationOpen(false)}
+        holdings={holdings}
+        cashBalance={cashBalance}
+        onOpenCanopyWalk={() => setCoolingOffModalOpen(true)}
       />
 
       <CloudSyncModal
@@ -297,6 +322,12 @@ export const App: React.FC = () => {
         holdings={holdings}
         transactions={transactions}
         summary={summary}
+      />
+
+      <SanctuaryDeedModal
+        isOpen={isSanctuaryDeedOpen}
+        onClose={() => setIsSanctuaryDeedOpen(false)}
+        netWorth={summary.totalValue}
       />
 
       <BrokerageImportModal

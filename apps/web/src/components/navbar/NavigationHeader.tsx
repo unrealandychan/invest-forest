@@ -1,5 +1,5 @@
 import React from 'react';
-import { DEMO_PRESETS, PortfolioSummary, WeatherCondition } from '@invest-forest/core';
+import { DEMO_PRESETS, PortfolioSummary, WeatherCondition, getBiomeTier } from '@invest-forest/core';
 import { TimeOfDay } from '../canvas/CircadianSky';
 import { soundscapeService } from '../../services/soundscapeService';
 import { Volume2, VolumeX } from 'lucide-react';
@@ -31,6 +31,7 @@ interface NavigationHeaderProps {
   onOpenGuide: () => void;
   onOpenSimulation: () => void;
   onOpenDisciplineCard: () => void;
+  onOpenSanctuaryDeed: () => void;
 }
 
 export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
@@ -49,6 +50,7 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
   onOpenGuide,
   onOpenSimulation,
   onOpenDisciplineCard,
+  onOpenSanctuaryDeed,
 }) => {
   const [isPlayingAudio, setIsPlayingAudio] = React.useState(soundscapeService.getIsPlaying());
 
@@ -91,16 +93,23 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
           </div>
         </div>
 
-        {/* Net Worth Pill */}
-        <div className="hidden lg:flex items-center gap-2 px-3 py-1 rounded-xl bg-forest-900/60 border border-forest-700/40 text-xs">
-          <span className="text-slate-400">Canopy:</span>
+        {/* Net Worth & Biome Tier Pill */}
+        <button
+          onClick={onOpenSanctuaryDeed}
+          title="View Sanctuary Deed & Biome Ascension"
+          className="hidden lg:flex items-center gap-2 px-3 py-1 rounded-xl bg-forest-900/60 hover:bg-forest-800 border border-forest-700/40 text-xs transition cursor-pointer"
+        >
+          <span className="text-sprout font-bold">
+            T{getBiomeTier(summary.totalValue).tierNumber}: {getBiomeTier(summary.totalValue).name.replace('The ', '')}
+          </span>
+          <span className="text-slate-500">•</span>
           <span className="font-bold text-white font-mono">
             ${summary.totalValue.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
           </span>
           <span className={`text-[11px] font-semibold ${summary.unrealizedGain >= 0 ? 'text-emerald-400' : 'text-amber-400'}`}>
             ({summary.unrealizedGain >= 0 ? '+' : ''}{summary.unrealizedGainPercent.toFixed(1)}%)
           </span>
-        </div>
+        </button>
       </div>
 
       {/* Center Dual-View Switcher */}

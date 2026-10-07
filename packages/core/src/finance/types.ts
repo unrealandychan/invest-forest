@@ -45,6 +45,19 @@ export interface PortfolioSummary {
   maxDrawdownPercent: number;
 }
 
+export interface HarvestMemorial {
+  id: string;
+  symbol: string;
+  name: string;
+  assetClass: AssetClass;
+  harvestedDate: string;
+  harvestedAmount: number;
+  harvestedShares: number;
+  yearsInSoil: number;
+  reason: string;
+  position?: [number, number, number];
+}
+
 export interface PresetScenario {
   id: string;
   name: string;
