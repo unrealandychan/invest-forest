@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, ContactShadows } from '@react-three/drei';
-import { Holding, WeatherCondition, HarvestMemorial } from '@invest-forest/core';
+import { Holding, WeatherCondition, HarvestMemorial, Transaction } from '@invest-forest/core';
 import { ProceduralTree } from './ProceduralTree';
 import { GroundTerrain } from './GroundTerrain';
 import { WeatherSystem } from './WeatherSystem';
@@ -10,6 +10,7 @@ import { HarvestStump } from './HarvestStump';
 
 interface ForestSceneProps {
   holdings: Holding[];
+  transactions?: Transaction[];
   memorials?: HarvestMemorial[];
   cashBalance: number;
   weather: WeatherCondition;
@@ -23,6 +24,7 @@ interface ForestSceneProps {
 
 export const ForestScene: React.FC<ForestSceneProps> = ({
   holdings,
+  transactions = [],
   memorials = [],
   cashBalance,
   weather,
@@ -85,6 +87,7 @@ export const ForestScene: React.FC<ForestSceneProps> = ({
             <ProceduralTree
               key={h.symbol}
               holding={h}
+              transactions={transactions}
               position={treePositions[i]}
               isSelected={selectedHolding?.symbol === h.symbol}
               weather={weather}

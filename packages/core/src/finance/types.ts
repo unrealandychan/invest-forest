@@ -12,6 +12,8 @@ export interface Transaction {
   price?: number;
   amount: number; // Positive magnitude of transaction
   note?: string;
+  isWinterBloom?: boolean;
+  drawdownAtPurchase?: number; // e.g. 15 for 15% drawdown at purchase
 }
 
 export interface Holding {

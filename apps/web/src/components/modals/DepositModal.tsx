@@ -11,9 +11,17 @@ interface DepositModalProps {
   holdings: Holding[];
   isOpen: boolean;
   onClose: () => void;
+  drawdownPercent?: number;
+  weather?: string;
 }
 
-export const DepositModal: React.FC<DepositModalProps> = ({ holdings, isOpen, onClose }) => {
+export const DepositModal: React.FC<DepositModalProps> = ({
+  holdings,
+  isOpen,
+  onClose,
+  drawdownPercent = 0,
+  weather = 'sunny',
+}) => {
   const [mode, setMode] = useState<'deposit' | 'buy'>('buy');
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [selectedSymbol, setSelectedSymbol] = useState(holdings[0]?.symbol || 'VOO');
@@ -109,6 +117,9 @@ export const DepositModal: React.FC<DepositModalProps> = ({ holdings, isOpen, on
       } else {
         const numShares = parseFloat(shares) || 1;
         const price = livePrice || (numAmount / numShares);
+        const isDrawdown = drawdownPercent <= -10 || weather === 'winter_snow';
+        const drawdownMag = Math.abs(drawdownPercent <= -10 ? drawdownPercent : weather === 'winter_snow' ? 18.5 : 0);
+
         await addTransaction({
           date: today,
           type: 'buy',
@@ -117,7 +128,11 @@ export const DepositModal: React.FC<DepositModalProps> = ({ holdings, isOpen, on
           shares: numShares,
           price,
           amount: numAmount,
-          note: `DCA purchase into ${currentEffectiveSymbol}`,
+          note: isDrawdown
+            ? `Winter Bloom DCA into ${currentEffectiveSymbol} (>10% discount)`
+            : `DCA purchase into ${currentEffectiveSymbol}`,
+          isWinterBloom: isDrawdown,
+          drawdownAtPurchase: isDrawdown ? drawdownMag : undefined,
         });
       }
 

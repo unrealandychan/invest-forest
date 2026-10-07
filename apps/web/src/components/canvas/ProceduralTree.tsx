@@ -2,10 +2,12 @@ import React, { useRef, useState, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
-import { calculateTreeMetrics, Holding, WeatherCondition } from '@invest-forest/core';
+import { calculateTreeMetrics, Holding, WeatherCondition, Transaction } from '@invest-forest/core';
+import { FrostFlowerCluster } from './FrostFlower';
 
 interface ProceduralTreeProps {
   holding: Holding;
+  transactions?: Transaction[];
   position: [number, number, number];
   isSelected: boolean;
   weather: WeatherCondition;
@@ -15,6 +17,7 @@ interface ProceduralTreeProps {
 
 export const ProceduralTree: React.FC<ProceduralTreeProps> = ({
   holding,
+  transactions,
   position,
   isSelected,
   weather,
@@ -30,7 +33,7 @@ export const ProceduralTree: React.FC<ProceduralTreeProps> = ({
   const targetScaleRef = useRef(1.0);
   const pulseRef = useRef(0);
 
-  const metrics = calculateTreeMetrics(holding);
+  const metrics = calculateTreeMetrics(holding, undefined, transactions);
   
   // Future Time Travel projected metrics
   const isTimeTraveling = timeTravelYears > 0;
@@ -109,6 +112,11 @@ export const ProceduralTree: React.FC<ProceduralTreeProps> = ({
           opacity={isSelected || hovered || pulseRef.current > 0 ? 0.85 : 0.4}
         />
       </mesh>
+
+      {/* Luminescent Frost Flowers blooming through the snow during winter drawdowns */}
+      {metrics.isWinterBloom && metrics.frostFlowerCount > 0 && (
+        <FrostFlowerCluster trunkRadius={trunkRadius} count={metrics.frostFlowerCount} />
+      )}
 
       {/* Trunk with Bark Material */}
       <mesh position={[0, height * 0.45, 0]} castShadow receiveShadow>
@@ -194,6 +202,11 @@ export const ProceduralTree: React.FC<ProceduralTreeProps> = ({
             </div>
             <div className="text-[10px] text-slate-300 mt-0.5">
               {growthRings} {growthRings === 1 ? 'Year Ring' : 'Year Rings'} • {(height).toFixed(1)}m Canopy {isTimeTraveling ? `(+${timeTravelYears}y)` : ''}
+              {metrics.isWinterBloom && metrics.frostFlowerCount > 0 && (
+                <div className="text-cyan-300 text-[9px] font-semibold mt-0.5">
+                  🌸 {metrics.frostFlowerCount} Frost Flowers • +{metrics.resilienceRings} Resilience
+                </div>
+              )}
             </div>
           </div>
         </Html>

@@ -1,4 +1,4 @@
-import { AssetClass, Holding } from '../finance/types';
+import { AssetClass, Holding, Transaction } from '../finance/types';
 
 export interface TreeSpeciesProfile {
   assetClass: AssetClass;
@@ -66,6 +66,7 @@ export interface BotanicalTreeMetrics {
   holdingDurationYears: number;
   growthRings: number;
   resilienceRings: number;
+  frostFlowerCount: number;
   totalRings: number;
   isWinterBloom: boolean;
   height: number;
@@ -77,7 +78,8 @@ export interface BotanicalTreeMetrics {
 
 export function calculateTreeMetrics(
   holding: Holding,
-  asOfDateStr: string = new Date().toISOString().slice(0, 10)
+  asOfDateStr: string = new Date().toISOString().slice(0, 10),
+  transactions?: Transaction[]
 ): BotanicalTreeMetrics {
   const species = SPECIES_CATALOG[holding.assetClass] || SPECIES_CATALOG.broad_market;
   const asOf = new Date(asOfDateStr).getTime();
@@ -113,9 +115,19 @@ export function calculateTreeMetrics(
   // Health multiplier: 1.0 is healthy; reduced in severe unrealized loss
   const healthMultiplier = gainMultiplier < -0.3 ? 0.6 : gainMultiplier < 0 ? 0.85 : 1.1;
 
-  // Winter Bloom & Resilience rings
-  const isWinterBloom = gainMultiplier < 0 || holding.costBasis > holdingValue;
-  const resilienceRings = isWinterBloom ? Math.min(3, Math.max(1, Math.floor(growthRings * 0.5))) : 0;
+  // Winter Bloom & Resilience rings from >10% drawdown purchases
+  const drawdownBuys = transactions
+    ? transactions.filter(
+        (t) =>
+          t.symbol === holding.symbol &&
+          (t.isWinterBloom || (t.drawdownAtPurchase !== undefined && t.drawdownAtPurchase >= 10))
+      )
+    : [];
+
+  const hasDrawdownHolding = gainMultiplier <= -0.10;
+  const isWinterBloom = drawdownBuys.length > 0 || hasDrawdownHolding;
+  const frostFlowerCount = isWinterBloom ? Math.max(4, Math.max(1, drawdownBuys.length) * 4) : 0;
+  const resilienceRings = isWinterBloom ? Math.max(1, Math.min(4, drawdownBuys.length || Math.floor(growthRings * 0.5))) : 0;
   const totalRings = growthRings + resilienceRings;
 
   return {
@@ -124,6 +136,7 @@ export function calculateTreeMetrics(
     holdingDurationYears: Math.round(holdingDurationYears * 10) / 10,
     growthRings,
     resilienceRings,
+    frostFlowerCount,
     totalRings,
     isWinterBloom,
     height: Math.round(height * 100) / 100,

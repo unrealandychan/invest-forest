@@ -1,16 +1,17 @@
 import React from 'react';
-import { Holding, calculateTreeMetrics } from '@invest-forest/core';
+import { Holding, Transaction, calculateTreeMetrics } from '@invest-forest/core';
 import { X, Award } from 'lucide-react';
 
 interface TreeInspectModalProps {
   holding: Holding | null;
+  transactions?: Transaction[];
   onClose: () => void;
 }
 
-export const TreeInspectModal: React.FC<TreeInspectModalProps> = ({ holding, onClose }) => {
+export const TreeInspectModal: React.FC<TreeInspectModalProps> = ({ holding, transactions, onClose }) => {
   if (!holding) return null;
 
-  const metrics = calculateTreeMetrics(holding);
+  const metrics = calculateTreeMetrics(holding, undefined, transactions);
   const {
     species,
     growthRings,
@@ -93,9 +94,17 @@ export const TreeInspectModal: React.FC<TreeInspectModalProps> = ({ holding, onC
           </div>
 
           {isWinterBloom && (
-            <div className="p-2 px-3 bg-cyan-950/60 border border-cyan-500/40 rounded-xl text-[11px] text-cyan-200 flex items-center gap-1.5">
-              <span>❄️</span>
-              <span><strong>Winter Bloom Active:</strong> +{resilienceRings} Resilience Rings awarded for patient holding through market winter!</span>
+            <div className="p-3 bg-cyan-950/70 border border-cyan-400/50 rounded-2xl text-[11px] text-cyan-200 space-y-1">
+              <div className="flex items-center gap-2 font-bold text-white text-xs">
+                <span>🌸</span>
+                <span>{metrics.frostFlowerCount} Luminescent Frost Flowers Blooming</span>
+                <span className="text-[10px] px-2 py-0.2 rounded-full bg-cyan-900 border border-cyan-400/40 text-cyan-300">
+                  +{resilienceRings} Resilience Rings
+                </span>
+              </div>
+              <p className="text-cyan-200/90 leading-relaxed">
+                Consecrated by purchasing shares during bear market drawdowns (&gt;10% discount). Luminescent frost flowers now bloom around the trunk flare on your 3D canvas, honoring your courage during market downturns.
+              </p>
             </div>
           )}
 

@@ -154,6 +154,7 @@ export const App: React.FC = () => {
           <div className="relative w-full h-full">
             <ForestScene
               holdings={holdings}
+              transactions={transactions}
               memorials={memorials}
               cashBalance={cashBalance}
               weather={weather}
@@ -242,6 +243,7 @@ export const App: React.FC = () => {
       {/* Modals */}
       <TreeInspectModal
         holding={selectedHolding}
+        transactions={transactions}
         onClose={() => setSelectedHolding(null)}
       />
 
@@ -249,6 +251,8 @@ export const App: React.FC = () => {
         holdings={holdings}
         isOpen={isDepositModalOpen}
         onClose={() => setDepositModalOpen(false)}
+        drawdownPercent={summary.unrealizedGainPercent}
+        weather={weather}
       />
 
       <CoolingOffModal

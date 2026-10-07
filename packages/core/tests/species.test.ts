@@ -41,4 +41,39 @@ describe('Botanical Species Mapping & Tree Metrics', () => {
     expect(metrics.species.commonName).toBe('Honey Apple Tree');
     expect(metrics.fruitCount).toBeGreaterThan(0);
   });
+
+  it('awards luminescent frost flowers and resilience rings when buying during drawdowns > 10%', () => {
+    const holding: Holding = {
+      symbol: 'VOO',
+      name: 'Vanguard S&P 500 ETF',
+      assetClass: 'broad_market',
+      shares: 10,
+      costBasis: 4500,
+      currentPrice: 480,
+      firstPurchasedDate: '2023-01-01',
+      lastPurchasedDate: '2023-06-01',
+    };
+
+    const discountBuyTx = [
+      {
+        id: 'tx-discount-1',
+        date: '2023-03-15',
+        type: 'buy' as const,
+        symbol: 'VOO',
+        assetClass: 'broad_market' as const,
+        shares: 5,
+        price: 390,
+        amount: 1950,
+        isWinterBloom: true,
+        drawdownAtPurchase: 18.5, // 18.5% drawdown at purchase
+      },
+    ];
+
+    const metrics = calculateTreeMetrics(holding, '2024-01-01', discountBuyTx);
+
+    expect(metrics.isWinterBloom).toBe(true);
+    expect(metrics.frostFlowerCount).toBeGreaterThanOrEqual(4);
+    expect(metrics.resilienceRings).toBeGreaterThanOrEqual(1);
+    expect(metrics.totalRings).toBe(metrics.growthRings + metrics.resilienceRings);
+  });
 });
