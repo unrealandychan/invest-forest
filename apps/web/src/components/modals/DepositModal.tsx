@@ -38,7 +38,15 @@ export const DepositModal: React.FC<DepositModalProps> = ({
   const [priceSource, setPriceSource] = useState<'live' | 'baseline'>('baseline');
   const [isFetchingPrice, setIsFetchingPrice] = useState(false);
 
-  const categories = ['All', 'Broad Market', 'Dividend & Yield', 'Bonds & Fixed Income', 'Cash & Treasury', 'Satellite & Speculative'];
+  const categories = [
+    'All',
+    'Mega-Cap Stocks',
+    'Broad Market',
+    'Dividend & Yield',
+    'Bonds & Fixed Income',
+    'Cash & Treasury',
+    'Satellite & Speculative',
+  ];
 
   const filteredAssets = ASSET_CATALOG.filter((a) => {
     const matchesCategory = activeCategory === 'All' || a.category === activeCategory;
@@ -279,6 +287,24 @@ export const DepositModal: React.FC<DepositModalProps> = ({
                           <div className="text-[10px] text-slate-400 truncate mt-0.5">{asset.name}</div>
                         </button>
                       ))}
+
+                      {/* Universal Ticker Shortcut when search term has no exact match */}
+                      {searchFilter.trim().length > 0 && !filteredAssets.some((a) => a.symbol === searchFilter.trim().toUpperCase()) && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setCustomSymbol(searchFilter.trim().toUpperCase());
+                            setCustomTickerMode(true);
+                          }}
+                          className="p-2 rounded-xl text-left border border-dashed border-sprout/70 bg-forest-900/70 hover:bg-forest-800 text-sprout transition flex flex-col justify-between col-span-2"
+                        >
+                          <div className="font-bold text-xs flex items-center gap-1.5">
+                            <span>🔍 Plant "{searchFilter.trim().toUpperCase()}"</span>
+                            <span className="text-[9px] px-1.5 py-0.2 rounded bg-forest-800 text-slate-200">Live Yahoo Quote</span>
+                          </div>
+                          <div className="text-[10px] text-slate-400 mt-0.5">Fetch real-time stock price and cultivate custom tree</div>
+                        </button>
+                      )}
                     </div>
                   </>
                 ) : (

@@ -5,11 +5,69 @@ export interface CatalogAsset {
   name: string;
   assetClass: AssetClass;
   defaultPrice: number;
-  category: 'Broad Market' | 'Dividend & Yield' | 'Bonds & Fixed Income' | 'Cash & Treasury' | 'Satellite & Speculative';
+  category: 'Broad Market' | 'Mega-Cap Stocks' | 'Dividend & Yield' | 'Bonds & Fixed Income' | 'Cash & Treasury' | 'Satellite & Speculative';
   description: string;
 }
 
 export const ASSET_CATALOG: CatalogAsset[] = [
+  // Mega-Cap & Blue Chip Stocks
+  {
+    symbol: 'AAPL',
+    name: 'Apple Inc.',
+    assetClass: 'broad_market',
+    defaultPrice: 333.63,
+    category: 'Mega-Cap Stocks',
+    description: 'Global consumer ecosystem titan with immense free cash flow and stock buybacks.'
+  },
+  {
+    symbol: 'GOOGL',
+    name: 'Alphabet Inc. (Google)',
+    assetClass: 'broad_market',
+    defaultPrice: 347.68,
+    category: 'Mega-Cap Stocks',
+    description: 'Search, cloud infrastructure, YouTube, and AI frontier leader.'
+  },
+  {
+    symbol: 'MSFT',
+    name: 'Microsoft Corp.',
+    assetClass: 'broad_market',
+    defaultPrice: 529.30,
+    category: 'Mega-Cap Stocks',
+    description: 'Enterprise enterprise software, Azure cloud, and generative AI powerhouse.'
+  },
+  {
+    symbol: 'NVDA',
+    name: 'NVIDIA Corp.',
+    assetClass: 'broad_market',
+    defaultPrice: 239.24,
+    category: 'Mega-Cap Stocks',
+    description: 'Global compute architecture fueling accelerated data centers and AI revolution.'
+  },
+  {
+    symbol: 'AMZN',
+    name: 'Amazon.com Inc.',
+    assetClass: 'broad_market',
+    defaultPrice: 256.29,
+    category: 'Mega-Cap Stocks',
+    description: 'Global e-commerce marketplace and AWS cloud computing backbone.'
+  },
+  {
+    symbol: 'TSLA',
+    name: 'Tesla Inc.',
+    assetClass: 'speculative',
+    defaultPrice: 380.68,
+    category: 'Mega-Cap Stocks',
+    description: 'Electric mobility, autonomous driving AI, and renewable energy storage.'
+  },
+  {
+    symbol: 'META',
+    name: 'Meta Platforms Inc.',
+    assetClass: 'broad_market',
+    defaultPrice: 585.40,
+    category: 'Mega-Cap Stocks',
+    description: 'Global social communications network connecting over 3 billion active daily users.'
+  },
+
   // Broad Market
   {
     symbol: 'VOO',
