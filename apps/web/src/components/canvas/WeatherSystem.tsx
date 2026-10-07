@@ -48,29 +48,8 @@ export const WeatherSystem: React.FC<WeatherSystemProps> = ({ weather }) => {
     posAttr.needsUpdate = true;
   });
 
-  // Lighting configurations
-  const ambientIntensity = weather === 'winter_snow' ? 0.4 : weather === 'rain' ? 0.35 : 0.65;
-  const sunColor = weather === 'winter_snow' ? '#d8e2dc' : weather === 'rain' ? '#94d2bd' : '#fffae8';
-  const sunIntensity = weather === 'winter_snow' ? 0.7 : weather === 'rain' ? 0.5 : 1.4;
-
   return (
     <>
-      <ambientLight intensity={ambientIntensity} color="#eaf4f4" />
-      <directionalLight
-        position={[12, 18, 10]}
-        intensity={sunIntensity}
-        color={sunColor}
-        castShadow
-        shadow-mapSize={[1024, 1024]}
-        shadow-camera-left={-10}
-        shadow-camera-right={10}
-        shadow-camera-top={10}
-        shadow-camera-bottom={-10}
-      />
-      <hemisphereLight
-        args={[weather === 'winter_snow' ? '#a2d2ff' : '#cfe0c3', '#403d39', 0.4]}
-      />
-
       {particleCount > 0 && (
         <points ref={pointsRef}>
           <bufferGeometry>

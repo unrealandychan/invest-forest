@@ -1,5 +1,8 @@
 import React from 'react';
 import { DEMO_PRESETS, PortfolioSummary, WeatherCondition } from '@invest-forest/core';
+import { TimeOfDay } from '../canvas/CircadianSky';
+import { soundscapeService } from '../../services/soundscapeService';
+import { Volume2, VolumeX } from 'lucide-react';
 import {
   TreePine,
   LayoutDashboard,
@@ -18,6 +21,8 @@ interface NavigationHeaderProps {
   summary: PortfolioSummary;
   weather: WeatherCondition;
   onCycleWeather: () => void;
+  timeOfDay: TimeOfDay;
+  onCycleTimeOfDay: () => void;
   activePresetId: string;
   onSelectPreset: (presetId: string) => void;
   onOpenDeposit: () => void;
@@ -25,6 +30,7 @@ interface NavigationHeaderProps {
   onOpenAiSpirit: () => void;
   onOpenGuide: () => void;
   onOpenSimulation: () => void;
+  onOpenDisciplineCard: () => void;
 }
 
 export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
@@ -33,6 +39,8 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
   summary,
   weather,
   onCycleWeather,
+  timeOfDay,
+  onCycleTimeOfDay,
   activePresetId,
   onSelectPreset,
   onOpenDeposit,
@@ -40,7 +48,14 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
   onOpenAiSpirit,
   onOpenGuide,
   onOpenSimulation,
+  onOpenDisciplineCard,
 }) => {
+  const [isPlayingAudio, setIsPlayingAudio] = React.useState(soundscapeService.getIsPlaying());
+
+  const handleToggleSoundscape = () => {
+    const active = soundscapeService.toggleSoundscape();
+    setIsPlayingAudio(active);
+  };
   const weatherIcons: Record<WeatherCondition, React.ReactNode> = {
     sunny: <Sun className="w-3.5 h-3.5 text-sunlit" />,
     breeze: <Wind className="w-3.5 h-3.5 text-moss" />,
@@ -117,6 +132,36 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
 
       {/* Right Controls: Weather Cycle, Scenario Switcher, Plant & Sync */}
       <div className="flex items-center gap-2">
+        {/* Ambient Soundscape Toggle */}
+        <button
+          onClick={handleToggleSoundscape}
+          title={isPlayingAudio ? 'Mute Ambient Forest Wind & Stream Audio' : 'Play Ambient Procedural Nature Soundscape'}
+          className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs transition ${
+            isPlayingAudio
+              ? 'bg-forest-800 border-sprout text-sprout shadow-sm'
+              : 'bg-forest-900/60 hover:bg-forest-800 border-forest-700/40 text-slate-400 hover:text-white'
+          }`}
+        >
+          {isPlayingAudio ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
+          <span className="hidden 2xl:inline text-[11px] font-medium">
+            {isPlayingAudio ? 'Ambient Sound' : 'Muted'}
+          </span>
+        </button>
+
+        {/* Time of Day Cycle Button */}
+        <button
+          onClick={onCycleTimeOfDay}
+          title="Cycle Circadian Time of Day (Dawn, Day, Dusk, Night)"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-forest-900/60 hover:bg-forest-800 border border-forest-700/40 text-xs text-slate-300 transition"
+        >
+          <span>
+            {timeOfDay === 'dawn' ? '🌅' : timeOfDay === 'day' ? '☀️' : timeOfDay === 'dusk' ? '🌇' : '🌙'}
+          </span>
+          <span className="hidden xl:inline text-[11px] font-medium capitalize">
+            {timeOfDay} {timeOfDay === 'night' && summary.dcaStreak >= 3 ? '✨ Aurora' : ''}
+          </span>
+        </button>
+
         {/* Weather Simulator Button */}
         <button
           onClick={onCycleWeather}
@@ -151,6 +196,16 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
         >
           <span>📖</span>
           <span className="hidden md:inline font-medium">Guide</span>
+        </button>
+
+        {/* Discipline Card Button */}
+        <button
+          onClick={onOpenDisciplineCard}
+          title="Shareable Zero-Knowledge Discipline Card"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-forest-900/60 hover:bg-forest-800 border border-forest-700/40 text-xs text-slate-300 hover:text-white transition"
+        >
+          <span>🏆</span>
+          <span className="hidden lg:inline font-medium">Card</span>
         </button>
 
         {/* Long-Term Compounding Simulator Button */}

@@ -28,6 +28,8 @@ interface PortfolioTerminalProps {
   onOpenPanicSell: () => void;
   onOpenAiSpirit?: () => void;
   onOpenSimulation?: () => void;
+  onOpenDisciplineCard?: () => void;
+  onOpenBrokerageImport?: () => void;
 }
 
 export const PortfolioTerminal: React.FC<PortfolioTerminalProps> = ({
@@ -39,6 +41,8 @@ export const PortfolioTerminal: React.FC<PortfolioTerminalProps> = ({
   onOpenPanicSell,
   onOpenAiSpirit,
   onOpenSimulation,
+  onOpenDisciplineCard,
+  onOpenBrokerageImport,
 }) => {
   const isPositive = summary.unrealizedGain >= 0;
 
@@ -167,6 +171,15 @@ export const PortfolioTerminal: React.FC<PortfolioTerminalProps> = ({
             <h2 className="text-lg font-bold text-white">Botanical Holdings Ledger</h2>
           </div>
           <div className="flex items-center gap-2">
+            {onOpenDisciplineCard && (
+              <button
+                onClick={onOpenDisciplineCard}
+                className="px-3 py-1.5 bg-forest-800 hover:bg-forest-700 text-amber-300 border border-amber-600/30 rounded-xl text-xs font-semibold transition flex items-center gap-1.5"
+              >
+                <span>🏆</span>
+                <span>Discipline Card</span>
+              </button>
+            )}
             {onOpenSimulation && (
               <button
                 onClick={onOpenSimulation}
@@ -183,6 +196,15 @@ export const PortfolioTerminal: React.FC<PortfolioTerminalProps> = ({
               >
                 <span>🦉</span>
                 <span>AI Ecology Audit</span>
+              </button>
+            )}
+            {onOpenBrokerageImport && (
+              <button
+                onClick={onOpenBrokerageImport}
+                className="px-3 py-1.5 bg-forest-800 hover:bg-forest-700 text-slate-200 border border-forest-600/40 rounded-xl text-xs font-semibold transition flex items-center gap-1.5"
+              >
+                <span>📥</span>
+                <span>Import Statement</span>
               </button>
             )}
             <button

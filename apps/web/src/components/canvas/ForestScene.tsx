@@ -5,11 +5,13 @@ import { Holding, WeatherCondition } from '@invest-forest/core';
 import { ProceduralTree } from './ProceduralTree';
 import { GroundTerrain } from './GroundTerrain';
 import { WeatherSystem } from './WeatherSystem';
+import { CircadianSky, TimeOfDay } from './CircadianSky';
 
 interface ForestSceneProps {
   holdings: Holding[];
   cashBalance: number;
   weather: WeatherCondition;
+  timeOfDay?: TimeOfDay;
   selectedHolding: Holding | null;
   onSelectHolding: (holding: Holding | null) => void;
   totalValue?: number;
@@ -20,6 +22,7 @@ export const ForestScene: React.FC<ForestSceneProps> = ({
   holdings,
   cashBalance,
   weather,
+  timeOfDay = 'day',
   selectedHolding,
   onSelectHolding,
   totalValue,
@@ -54,6 +57,10 @@ export const ForestScene: React.FC<ForestSceneProps> = ({
         }}
         gl={{ antialias: true, powerPreference: 'high-performance' }}
       >
+        <CircadianSky
+          timeOfDay={timeOfDay}
+          hasAurora={Boolean(dcaStreak && dcaStreak >= 3)}
+        />
         <WeatherSystem weather={weather} />
 
         <group>

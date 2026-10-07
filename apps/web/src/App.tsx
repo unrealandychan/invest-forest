@@ -24,6 +24,9 @@ import { CloudSyncModal } from './components/modals/CloudSyncModal';
 import { ForestSpiritChat } from './components/ai/ForestSpiritChat';
 import { OnboardingGuideModal } from './components/modals/OnboardingGuideModal';
 import { SimulationModal } from './components/modals/SimulationModal';
+import { DisciplineCardModal } from './components/modals/DisciplineCardModal';
+import { BrokerageImportModal } from './components/modals/BrokerageImportModal';
+import { TimeOfDay } from './components/canvas/CircadianSky';
 import { Sparkles, Footprints, Shield, Bot } from 'lucide-react';
 import { triggerHaptic, setupNativeLifecycle } from './services/capacitorBridge';
 
@@ -37,6 +40,8 @@ export const App: React.FC = () => {
     setActivePresetId,
     weather,
     setWeather,
+    timeOfDay,
+    setTimeOfDay,
     isDepositModalOpen,
     setDepositModalOpen,
     isCoolingOffModalOpen,
@@ -49,6 +54,8 @@ export const App: React.FC = () => {
 
   const [isGuideOpen, setIsGuideOpen] = React.useState(false);
   const [isSimulationOpen, setIsSimulationOpen] = React.useState(false);
+  const [isDisciplineCardOpen, setIsDisciplineCardOpen] = React.useState(false);
+  const [isBrokerageImportOpen, setIsBrokerageImportOpen] = React.useState(false);
 
   // Initialize IndexedDB on first run and wire native lifecycle
   useEffect(() => {
@@ -84,6 +91,12 @@ export const App: React.FC = () => {
     setWeather(cycle[nextIdx]);
   };
 
+  const handleCycleTimeOfDay = () => {
+    const cycle: TimeOfDay[] = ['dawn', 'day', 'dusk', 'night'];
+    const nextIdx = (cycle.indexOf(timeOfDay) + 1) % cycle.length;
+    setTimeOfDay(cycle[nextIdx]);
+  };
+
   const handleSelectPreset = async (presetId: string) => {
     setActivePresetId(presetId);
     await loadPreset(presetId);
@@ -111,6 +124,8 @@ export const App: React.FC = () => {
         summary={summary}
         weather={weather}
         onCycleWeather={handleCycleWeather}
+        timeOfDay={timeOfDay}
+        onCycleTimeOfDay={handleCycleTimeOfDay}
         activePresetId={activePresetId}
         onSelectPreset={handleSelectPreset}
         onOpenDeposit={() => setDepositModalOpen(true)}
@@ -118,6 +133,7 @@ export const App: React.FC = () => {
         onOpenAiSpirit={() => setAiSpiritOpen(true)}
         onOpenGuide={() => setIsGuideOpen(true)}
         onOpenSimulation={() => setIsSimulationOpen(true)}
+        onOpenDisciplineCard={() => setIsDisciplineCardOpen(true)}
       />
 
       {/* Main Dual-View Content Area */}
@@ -128,6 +144,7 @@ export const App: React.FC = () => {
               holdings={holdings}
               cashBalance={cashBalance}
               weather={weather}
+              timeOfDay={timeOfDay}
               selectedHolding={selectedHolding}
               onSelectHolding={(h) => {
                 if (h) triggerHaptic();
@@ -181,6 +198,8 @@ export const App: React.FC = () => {
             onOpenPanicSell={() => setCoolingOffModalOpen(true)}
             onOpenAiSpirit={() => setAiSpiritOpen(true)}
             onOpenSimulation={() => setIsSimulationOpen(true)}
+            onOpenDisciplineCard={() => setIsDisciplineCardOpen(true)}
+            onOpenBrokerageImport={() => setIsBrokerageImportOpen(true)}
           />
         )}
       </main>
@@ -247,6 +266,19 @@ export const App: React.FC = () => {
         isOpen={isSimulationOpen}
         onClose={() => setIsSimulationOpen(false)}
         currentNetWorth={summary.totalValue}
+      />
+
+      <DisciplineCardModal
+        isOpen={isDisciplineCardOpen}
+        onClose={() => setIsDisciplineCardOpen(false)}
+        holdings={holdings}
+        transactions={transactions}
+        summary={summary}
+      />
+
+      <BrokerageImportModal
+        isOpen={isBrokerageImportOpen}
+        onClose={() => setIsBrokerageImportOpen(false)}
       />
     </div>
   );

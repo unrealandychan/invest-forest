@@ -17,6 +17,20 @@ const config: CapacitorConfig = {
       androidScaleType: 'CENTER_CROP',
       showSpinner: false,
     },
+    CapacitorSQLite: {
+      iosDatabaseLocation: 'Library/CapacitorDatabase',
+      iosIsEncryption: true,
+      iosKeychainPrefix: 'investforest',
+      iosBiometric: {
+        biometricAuth: false,
+        biometricTitle: 'Biometric login for Invest Forest',
+      },
+      androidIsEncryption: true,
+      androidBiometric: {
+        biometricAuth: false,
+        biometricTitle: 'Biometric login for Invest Forest',
+      },
+    },
   },
 };
 

@@ -3,6 +3,7 @@ import confetti from 'canvas-confetti';
 import { AssetClass, Holding, ASSET_CATALOG, SPECIES_CATALOG } from '@invest-forest/core';
 import { addTransaction } from '../../storage/repository';
 import { triggerHaptic } from '../../services/capacitorBridge';
+import { soundscapeService } from '../../services/soundscapeService';
 import { ImpactStyle } from '@capacitor/haptics';
 import { X, Sprout, PlusCircle, Search, RefreshCw, Radio } from 'lucide-react';
 
@@ -120,8 +121,9 @@ export const DepositModal: React.FC<DepositModalProps> = ({ holdings, isOpen, on
         });
       }
 
-      // Celebratory low-poly foliage confetti & haptic pulse
+      // Celebratory low-poly foliage confetti & haptic pulse & chime
       triggerHaptic(ImpactStyle.Medium);
+      soundscapeService.playPlantingChime();
       confetti({
         particleCount: 65,
         spread: 70,
