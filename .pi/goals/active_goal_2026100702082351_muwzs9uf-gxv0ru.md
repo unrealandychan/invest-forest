@@ -5,13 +5,13 @@
   "status": "active",
   "autoContinue": true,
   "usage": {
-    "tokensUsed": 1562258,
-    "activeSeconds": 22667
+    "tokensUsed": 1590281,
+    "activeSeconds": 22743
   },
   "sisyphus": false,
-  "revision": 84,
+  "revision": 88,
   "createdAt": "2026-10-06T18:08:23.511Z",
-  "updatedAt": "2026-10-07T00:26:45.602Z",
+  "updatedAt": "2026-10-07T00:28:03.234Z",
   "scheduler": {
     "version": 1,
     "owner": "01a1120f-e2a8-73d8-8771-a3b8cc2ea584",
@@ -57,15 +57,16 @@
       {
         "id": "task-5",
         "title": "End-to-end verification & local playtesting runbook",
-        "status": "pending",
-        "verificationContract": "Run all unit and integration tests, verify Docker startup, and provide a clear 1-command playtesting guide for the user."
+        "status": "complete",
+        "verificationContract": "Run all unit and integration tests, verify Docker startup, and provide a clear 1-command playtesting guide for the user.",
+        "completedAt": "2026-10-07T00:27:45.139Z",
+        "evidence": "Verified all unit/integration tests (25/25 green), verified Docker builds & proxy health, documented 1-command playtest guide in README.md, created GitHub templates & issues roadmap in docs/08."
       }
     ],
     "blockCompletion": true,
     "proposedAt": "2026-10-06T18:07:36.403Z"
   },
-  "activePath": ".pi/goals/active_goal_2026100702082351_muwzs9uf-gxv0ru.md",
-  "currentTaskId": "task-5"
+  "activePath": ".pi/goals/active_goal_2026100702082351_muwzs9uf-gxv0ru.md"
 }
 
 # Goal Prompt
@@ -97,8 +98,8 @@ If blocked: Stop and ask the user for guidance.
 - Status: running
 - Auto-continue: on
 - Sisyphus mode: no
-- Time spent: 6h17m47s
-- Tokens used: 1.6M (1,562,258) tokens
+- Time spent: 6h19m03s
+- Tokens used: 1.6M (1,590,281) tokens
 ## Tasks
 
 <!-- blockCompletion: true -->
@@ -106,5 +107,5 @@ If blocked: Stop and ask the user for guidance.
 - [x] task-2: In-game AI UX features & portfolio ecology diagnostics — evidence: Integrated interactive AI Canopy Spirit, Portfolio Ecology Audit, onboarding guide modal, expanded 18+ asset catalogue, and dynamic 3D tree growth scaling into Forest and Terminal views.
 - [x] task-3: Robust local Docker Compose stack & healthcheck orchestration — evidence: Built and verified local Docker Compose stack (invest-forest-server:latest on :8080, invest-forest-web:latest on :3000 with reverse proxy); healthchecks and curl requests passed.
 - [x] task-4: Comprehensive QA, DDD, and behavioral finance audit — evidence: Completed rigorous Clean Code, DDD, AI Harness, and Behavioral Finance audit documented in docs/07-ai-docker-poc-audit.md with 100% pass across all categories.
-- [ ] task-5: End-to-end verification & local playtesting runbook — contract: Run all unit and integration tests, verify Docker startup, and provide a clear 1-command playtesting guide for the user.
+- [x] task-5: End-to-end verification & local playtesting runbook — evidence: Verified all unit/integration tests (25/25 green), verified Docker builds & proxy health, documented 1-command playtest guide in README.md, created GitHub templates & issues roadmap in docs/08.
 
