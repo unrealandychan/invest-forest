@@ -33,6 +33,7 @@ interface PortfolioTerminalProps {
   onOpenBrokerageImport?: () => void;
   onOpenSanctuaryDeed?: () => void;
   onOpenReset?: () => void;
+  onOpenSell?: (holding: Holding) => void;
 }
 
 export const PortfolioTerminal: React.FC<PortfolioTerminalProps> = ({
@@ -49,6 +50,7 @@ export const PortfolioTerminal: React.FC<PortfolioTerminalProps> = ({
   onOpenBrokerageImport,
   onOpenSanctuaryDeed,
   onOpenReset,
+  onOpenSell,
 }) => {
   const isPositive = summary.unrealizedGain >= 0;
 
@@ -308,15 +310,28 @@ export const PortfolioTerminal: React.FC<PortfolioTerminalProps> = ({
                       </div>
                     </td>
                     <td className="py-3.5 text-right">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onSelectHolding(h);
-                        }}
-                        className="px-2.5 py-1 text-xs bg-forest-800/80 hover:bg-forest-700 text-slate-200 rounded-lg border border-forest-600/40 group-hover:border-sprout transition"
-                      >
-                        Examine Tree 🌲
-                      </button>
+                      <div className="flex items-center justify-end gap-1.5">
+                        {onOpenSell && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onOpenSell(h);
+                            }}
+                            className="px-2.5 py-1 text-xs bg-amber-950/60 hover:bg-amber-900 text-amber-300 rounded-lg border border-amber-700/50 transition font-bold"
+                          >
+                            Sell
+                          </button>
+                        )}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onSelectHolding(h);
+                          }}
+                          className="px-2.5 py-1 text-xs bg-forest-800/80 hover:bg-forest-700 text-slate-200 rounded-lg border border-forest-600/40 group-hover:border-sprout transition"
+                        >
+                          Examine 🌲
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );

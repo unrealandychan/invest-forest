@@ -29,6 +29,7 @@ import { DisciplineCardModal } from './components/modals/DisciplineCardModal';
 import { SanctuaryDeedModal } from './components/modals/SanctuaryDeedModal';
 import { BrokerageImportModal } from './components/modals/BrokerageImportModal';
 import { ResetConfirmModal } from './components/modals/ResetConfirmModal';
+import { SellModal } from './components/modals/SellModal';
 import { TimeOfDay } from './components/canvas/CircadianSky';
 import { TimeMachineScrubber } from './components/canvas/TimeMachineScrubber';
 import { FearEasingBanner } from './components/canvas/FearEasingBanner';
@@ -68,6 +69,8 @@ export const App: React.FC = () => {
   const [isBrokerageImportOpen, setIsBrokerageImportOpen] = React.useState(false);
   const [isLiquidationOpen, setIsLiquidationOpen] = React.useState(false);
   const [isResetModalOpen, setIsResetModalOpen] = React.useState(false);
+  const [selectedSellHolding, setSelectedSellHolding] = React.useState<Holding | null>(null);
+  const [isSellModalOpen, setIsSellModalOpen] = React.useState(false);
 
   // Initialize IndexedDB on first run and wire native lifecycle
   useEffect(() => {
@@ -240,6 +243,10 @@ export const App: React.FC = () => {
             onOpenSanctuaryDeed={() => setIsSanctuaryDeedOpen(true)}
             onOpenBrokerageImport={() => setIsBrokerageImportOpen(true)}
             onOpenReset={() => setIsResetModalOpen(true)}
+            onOpenSell={(h) => {
+              setSelectedSellHolding(h);
+              setIsSellModalOpen(true);
+            }}
           />
         )}
       </main>
@@ -249,6 +256,10 @@ export const App: React.FC = () => {
         holding={selectedHolding}
         transactions={transactions}
         onClose={() => setSelectedHolding(null)}
+        onOpenSell={(h) => {
+          setSelectedSellHolding(h);
+          setIsSellModalOpen(true);
+        }}
       />
 
       <DepositModal
@@ -353,6 +364,12 @@ export const App: React.FC = () => {
             setIsGuideOpen(true);
           }
         }}
+      />
+
+      <SellModal
+        holding={selectedSellHolding}
+        isOpen={isSellModalOpen}
+        onClose={() => setIsSellModalOpen(false)}
       />
     </div>
   );

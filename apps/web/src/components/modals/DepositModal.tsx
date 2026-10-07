@@ -373,8 +373,8 @@ export const DepositModal: React.FC<DepositModalProps> = ({
                 <div className="text-[10px] text-slate-400">{currentSpecies.description}</div>
               </div>
 
-              {/* Amount and Shares */}
-              <div className="grid grid-cols-2 gap-3">
+              {/* Amount, Price, and Shares */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                 <div>
                   <label className="block text-slate-300 font-medium mb-1">Investment Amount ($)</label>
                   <input
@@ -396,13 +396,41 @@ export const DepositModal: React.FC<DepositModalProps> = ({
                   />
                 </div>
                 <div>
+                  <label className="block text-slate-300 font-medium mb-1">Price per Share ($)</label>
+                  <input
+                    type="number"
+                    min="0.01"
+                    step="any"
+                    value={livePrice ? livePrice.toFixed(2) : ''}
+                    placeholder="100.00"
+                    onChange={(e) => {
+                      const newP = parseFloat(e.target.value);
+                      if (!isNaN(newP) && newP > 0) {
+                        setLivePrice(newP);
+                        const a = parseFloat(amount) || 500;
+                        setShares((a / newP).toFixed(3));
+                      }
+                    }}
+                    className="w-full bg-forest-900 border border-forest-700/60 rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-sprout"
+                    required
+                  />
+                </div>
+                <div>
                   <label className="block text-slate-300 font-medium mb-1">Calculated Shares</label>
                   <input
                     type="number"
                     min="0.001"
                     step="any"
                     value={shares}
-                    onChange={(e) => setShares(e.target.value)}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setShares(val);
+                      const sh = parseFloat(val);
+                      const p = livePrice && livePrice > 0 ? livePrice : 100;
+                      if (!isNaN(sh) && sh > 0) {
+                        setAmount(Math.round(sh * p).toString());
+                      }
+                    }}
                     className="w-full bg-forest-900 border border-forest-700/60 rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-sprout"
                     required
                   />

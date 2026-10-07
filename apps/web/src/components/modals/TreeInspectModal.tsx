@@ -1,14 +1,15 @@
 import React from 'react';
 import { Holding, Transaction, calculateTreeMetrics } from '@invest-forest/core';
-import { X, Award } from 'lucide-react';
+import { X, Award, DollarSign } from 'lucide-react';
 
 interface TreeInspectModalProps {
   holding: Holding | null;
   transactions?: Transaction[];
   onClose: () => void;
+  onOpenSell?: (holding: Holding) => void;
 }
 
-export const TreeInspectModal: React.FC<TreeInspectModalProps> = ({ holding, transactions, onClose }) => {
+export const TreeInspectModal: React.FC<TreeInspectModalProps> = ({ holding, transactions, onClose, onOpenSell }) => {
   if (!holding) return null;
 
   const metrics = calculateTreeMetrics(holding, undefined, transactions);
@@ -159,10 +160,23 @@ export const TreeInspectModal: React.FC<TreeInspectModalProps> = ({ holding, tra
         </div>
 
         {/* Footer */}
-        <div className="flex justify-end pt-2">
+        <div className="flex items-center justify-between pt-2">
+          {onOpenSell && (
+            <button
+              onClick={() => {
+                onClose();
+                onOpenSell(holding);
+              }}
+              className="px-4 py-2 bg-amber-950/60 hover:bg-amber-900/80 text-amber-300 border border-amber-600/40 font-bold text-xs rounded-xl transition flex items-center gap-1.5 shadow-sm"
+            >
+              <DollarSign className="w-3.5 h-3.5" />
+              <span>Sell / Trim {holding.symbol}</span>
+            </button>
+          )}
+
           <button
             onClick={onClose}
-            className="px-5 py-2 bg-forest-600 hover:bg-forest-500 text-white font-medium text-xs rounded-xl transition"
+            className="px-5 py-2 bg-forest-600 hover:bg-forest-500 text-white font-medium text-xs rounded-xl transition ml-auto"
           >
             Return to Forest Canopy
           </button>
